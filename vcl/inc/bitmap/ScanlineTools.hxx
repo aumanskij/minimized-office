@@ -16,7 +16,7 @@
 
 namespace vcl::bitmap
 {
-class ScanlineTransformer
+class IScanlineTransformer
 {
 public:
     virtual void startLine(sal_uInt8* pLine) = 0;
@@ -24,127 +24,162 @@ public:
     virtual Color readPixel() = 0;
     virtual void writePixel(Color nColor) = 0;
 
-    virtual ~ScanlineTransformer() = default;
+    virtual ~IScanlineTransformer() = default;
 };
 
-class ScanlineTransformer_ARGB final : public ScanlineTransformer
+class ScanlineTransformer_RGB565 final : public IScanlineTransformer
 {
-private:
-    sal_uInt8* pData;
+protected:
+    sal_uInt16* mpData;
 
 public:
-    virtual void startLine(sal_uInt8* pLine) override { pData = pLine; }
+    void startLine(sal_uInt8* pLine) override { mpData = reinterpret_cast<sal_uInt16*>(pLine); }
 
-    virtual void skipPixel(sal_uInt32 nPixel) override { pData += nPixel << 2; }
+    void skipPixel(sal_uInt32 nPixel) override { mpData += nPixel; }
 
-    virtual Color readPixel() override
+    Color readPixel() override
     {
-        const Color aColor(ColorTransparency, pData[4], pData[1], pData[2], pData[3]);
-        pData += 4;
+        sal_uInt8 R = sal_uInt8((*mpData & 0xf800) >> 8);
+        sal_uInt8 G = sal_uInt8((*mpData & 0x07e0) >> 3);
+        sal_uInt8 B = sal_uInt8((*mpData & 0x001f) << 3);
+        mpData++;
+        return Color(R, G, B);
+    }
+
+    void writePixel(Color nColor) override
+    {
+        sal_uInt16 R = (nColor.GetRed() & 0xf8) << 8;
+        sal_uInt16 G = (nColor.GetGreen() & 0xfc) << 3;
+        sal_uInt16 B = (nColor.GetBlue() & 0xf8) >> 3;
+        *mpData++ = R | G | B;
+    }
+};
+
+class ScanlineTransformerBase : public IScanlineTransformer
+{
+protected:
+    sal_uInt8* mpData;
+
+public:
+    ScanlineTransformerBase()
+        : mpData(nullptr)
+    {
+    }
+
+    void startLine(sal_uInt8* pLine) override { mpData = pLine; }
+};
+
+class ScanlineTransformer_ARGB final : public ScanlineTransformerBase
+{
+public:
+    void skipPixel(sal_uInt32 nPixel) override { mpData += nPixel << 2; }
+
+    Color readPixel() override
+    {
+        const Color aColor(ColorTransparency, mpData[4], mpData[1], mpData[2], mpData[3]);
+        mpData += 4;
         return aColor;
     }
 
-    virtual void writePixel(Color nColor) override
+    void writePixel(Color nColor) override
     {
-        *pData++ = 255 - nColor.GetAlpha();
-        *pData++ = nColor.GetRed();
-        *pData++ = nColor.GetGreen();
-        *pData++ = nColor.GetBlue();
+        *mpData++ = 255 - nColor.GetAlpha();
+        *mpData++ = nColor.GetRed();
+        *mpData++ = nColor.GetGreen();
+        *mpData++ = nColor.GetBlue();
     }
 };
 
-class ScanlineTransformer_BGR final : public ScanlineTransformer
+class ScanlineTransformer_BGR final : public ScanlineTransformerBase
 {
-private:
-    sal_uInt8* pData;
-
 public:
-    virtual void startLine(sal_uInt8* pLine) override { pData = pLine; }
+    void skipPixel(sal_uInt32 nPixel) override { mpData += (nPixel << 1) + nPixel; }
 
-    virtual void skipPixel(sal_uInt32 nPixel) override { pData += (nPixel << 1) + nPixel; }
-
-    virtual Color readPixel() override
+    Color readPixel() override
     {
-        const Color aColor(pData[2], pData[1], pData[0]);
-        pData += 3;
+        const Color aColor(mpData[2], mpData[1], mpData[0]);
+        mpData += 3;
         return aColor;
     }
 
-    virtual void writePixel(Color nColor) override
+    void writePixel(Color nColor) override
     {
-        *pData++ = nColor.GetBlue();
-        *pData++ = nColor.GetGreen();
-        *pData++ = nColor.GetRed();
+        *mpData++ = nColor.GetBlue();
+        *mpData++ = nColor.GetGreen();
+        *mpData++ = nColor.GetRed();
     }
 };
 
-class ScanlineTransformer_8BitPalette final : public ScanlineTransformer
+class ScanlineTransformerPaletteBase : public ScanlineTransformerBase
 {
-private:
-    sal_uInt8* pData;
+protected:
     const BitmapPalette& mrPalette;
 
 public:
-    explicit ScanlineTransformer_8BitPalette(const BitmapPalette& rPalette)
-        : pData(nullptr)
+    ScanlineTransformerPaletteBase(const BitmapPalette& rPalette)
+        : ScanlineTransformerBase()
         , mrPalette(rPalette)
     {
     }
+};
 
-    virtual void startLine(sal_uInt8* pLine) override { pData = pLine; }
-
-    virtual void skipPixel(sal_uInt32 nPixel) override { pData += nPixel; }
-
-    virtual Color readPixel() override
+class ScanlineTransformer_8BitPalette final : public ScanlineTransformerPaletteBase
+{
+public:
+    explicit ScanlineTransformer_8BitPalette(const BitmapPalette& rPalette)
+        : ScanlineTransformerPaletteBase(rPalette)
     {
-        const sal_uInt8 nIndex(*pData++);
+    }
+
+    void skipPixel(sal_uInt32 nPixel) override { mpData += nPixel; }
+
+    Color readPixel() override
+    {
+        const sal_uInt8 nIndex(*mpData++);
         if (nIndex < mrPalette.GetEntryCount())
             return mrPalette[nIndex];
         else
             return COL_BLACK;
     }
 
-    virtual void writePixel(Color nColor) override
+    void writePixel(Color nColor) override
     {
-        *pData++ = static_cast<sal_uInt8>(mrPalette.GetBestIndex(nColor));
+        *mpData++ = static_cast<sal_uInt8>(mrPalette.GetBestIndex(nColor));
     }
 };
 
-class ScanlineTransformer_4BitPalette final : public ScanlineTransformer
+class ScanlineTransformer_4BitPalette final : public ScanlineTransformerPaletteBase
 {
 private:
-    sal_uInt8* pData;
-    const BitmapPalette& mrPalette;
     sal_uInt32 mnX;
     sal_uInt32 mnShift;
 
 public:
     explicit ScanlineTransformer_4BitPalette(const BitmapPalette& rPalette)
-        : pData(nullptr)
-        , mrPalette(rPalette)
+        : ScanlineTransformerPaletteBase(rPalette)
         , mnX(0)
         , mnShift(0)
     {
     }
 
-    virtual void skipPixel(sal_uInt32 nPixel) override
+    void skipPixel(sal_uInt32 nPixel) override
     {
         mnX += nPixel;
         if (nPixel & 1) // is nPixel an odd number
             mnShift ^= 4;
     }
 
-    virtual void startLine(sal_uInt8* pLine) override
+    void startLine(sal_uInt8* pLine) override
     {
-        pData = pLine;
+        ScanlineTransformerBase::startLine(pLine);
         mnX = 0;
         mnShift = 4;
     }
 
-    virtual Color readPixel() override
+    Color readPixel() override
     {
         const sal_uInt32 nDataIndex = mnX / 2;
-        const sal_uInt8 nIndex((pData[nDataIndex] >> mnShift) & 0x0f);
+        const sal_uInt8 nIndex((mpData[nDataIndex] >> mnShift) & 0x0f);
         mnX++;
         mnShift ^= 4;
 
@@ -154,42 +189,39 @@ public:
             return COL_BLACK;
     }
 
-    virtual void writePixel(Color nColor) override
+    void writePixel(Color nColor) override
     {
         const sal_uInt32 nDataIndex = mnX / 2;
         const sal_uInt8 nColorIndex = mrPalette.GetBestIndex(nColor);
-        pData[nDataIndex] |= (nColorIndex & 0x0f) << mnShift;
+        mpData[nDataIndex] |= (nColorIndex & 0x0f) << mnShift;
         mnX++;
         mnShift ^= 4;
     }
 };
 
-class ScanlineTransformer_1BitPalette final : public ScanlineTransformer
+class ScanlineTransformer_1BitPalette final : public ScanlineTransformerPaletteBase
 {
 private:
-    sal_uInt8* pData;
-    const BitmapPalette& mrPalette;
     sal_uInt32 mnX;
 
 public:
     explicit ScanlineTransformer_1BitPalette(const BitmapPalette& rPalette)
-        : pData(nullptr)
-        , mrPalette(rPalette)
+        : ScanlineTransformerPaletteBase(rPalette)
         , mnX(0)
     {
     }
 
-    virtual void skipPixel(sal_uInt32 nPixel) override { mnX += nPixel; }
+    void skipPixel(sal_uInt32 nPixel) override { mnX += nPixel; }
 
-    virtual void startLine(sal_uInt8* pLine) override
+    void startLine(sal_uInt8* pLine) override
     {
-        pData = pLine;
+        ScanlineTransformerBase::startLine(pLine);
         mnX = 0;
     }
 
-    virtual Color readPixel() override
+    Color readPixel() override
     {
-        const sal_uInt8 nIndex((pData[mnX >> 3] >> (7 - (mnX & 7))) & 1);
+        const sal_uInt8 nIndex((mpData[mnX >> 3] >> (7 - (mnX & 7))) & 1);
         mnX++;
 
         if (nIndex < mrPalette.GetEntryCount())
@@ -198,18 +230,18 @@ public:
             return COL_BLACK;
     }
 
-    virtual void writePixel(Color nColor) override
+    void writePixel(Color nColor) override
     {
         if (mrPalette.GetBestIndex(nColor) & 1)
-            pData[mnX >> 3] |= 1 << (7 - (mnX & 7));
+            mpData[mnX >> 3] |= 1 << (7 - (mnX & 7));
         else
-            pData[mnX >> 3] &= ~(1 << (7 - (mnX & 7)));
+            mpData[mnX >> 3] &= ~(1 << (7 - (mnX & 7)));
         mnX++;
     }
 };
 
-std::unique_ptr<ScanlineTransformer> getScanlineTransformer(sal_uInt16 nBits,
-                                                            const BitmapPalette& rPalette)
+std::unique_ptr<IScanlineTransformer> getScanlineTransformer(sal_uInt16 nBits,
+                                                             const BitmapPalette& rPalette)
 {
     switch (nBits)
     {
@@ -219,6 +251,8 @@ std::unique_ptr<ScanlineTransformer> getScanlineTransformer(sal_uInt16 nBits,
             return std::make_unique<ScanlineTransformer_4BitPalette>(rPalette);
         case 8:
             return std::make_unique<ScanlineTransformer_8BitPalette>(rPalette);
+        case 16:
+            return std::make_unique<ScanlineTransformer_RGB565>();
         case 24:
             return std::make_unique<ScanlineTransformer_BGR>();
         case 32:

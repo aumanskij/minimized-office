@@ -19,6 +19,7 @@ class ScanlineToolsTest : public CppUnit::TestFixture
 {
     void ScanlineTransformer_32_ARGB();
     void ScanlineTransformer_24_BGR();
+    void ScanlineTransformer_16_RGB565();
     void ScanlineTransformer_8bit_Palette();
     void ScanlineTransformer_4bit_Palette();
     void ScanlineTransformer_1bit_Palette();
@@ -26,6 +27,7 @@ class ScanlineToolsTest : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(ScanlineToolsTest);
     CPPUNIT_TEST(ScanlineTransformer_32_ARGB);
     CPPUNIT_TEST(ScanlineTransformer_24_BGR);
+    CPPUNIT_TEST(ScanlineTransformer_16_RGB565);
     CPPUNIT_TEST(ScanlineTransformer_8bit_Palette);
     CPPUNIT_TEST(ScanlineTransformer_4bit_Palette);
     CPPUNIT_TEST(ScanlineTransformer_1bit_Palette);
@@ -35,8 +37,7 @@ class ScanlineToolsTest : public CppUnit::TestFixture
 void ScanlineToolsTest::ScanlineTransformer_32_ARGB()
 {
     BitmapPalette aPalette;
-    std::unique_ptr<vcl::bitmap::ScanlineTransformer> pScanlineTransformer
-        = vcl::bitmap::getScanlineTransformer(32, aPalette);
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(32, aPalette);
 
     std::vector<sal_uInt8> aScanLine(5 * 4, 0); // 5 * 4 BytesPerPixel
     pScanlineTransformer->startLine(aScanLine.data());
@@ -64,8 +65,7 @@ void ScanlineToolsTest::ScanlineTransformer_32_ARGB()
 void ScanlineToolsTest::ScanlineTransformer_24_BGR()
 {
     BitmapPalette aPalette;
-    std::unique_ptr<vcl::bitmap::ScanlineTransformer> pScanlineTransformer
-        = vcl::bitmap::getScanlineTransformer(24, aPalette);
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(24, aPalette);
 
     std::vector<sal_uInt8> aScanLine(5 * 3, 0); // 5 * 3 BytesPerPixel
     pScanlineTransformer->startLine(aScanLine.data());
@@ -90,6 +90,51 @@ void ScanlineToolsTest::ScanlineTransformer_24_BGR()
     }
 }
 
+void ScanlineToolsTest::ScanlineTransformer_16_RGB565()
+{
+    BitmapPalette aPalette;
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(16, aPalette);
+
+    // Test writing - we apply colors which will be written into the scanline
+    // in the R5G6B5 format
+    std::vector<sal_uInt8> aScanLine(5 * 2, 0); // 5 * 2 BytesPerPixel
+    pScanlineTransformer->startLine(aScanLine.data());
+
+    std::vector<Color> aColors{
+        Color(ColorTransparency, 0, 10, 250, 120),   Color(ColorTransparency, 50, 30, 230, 110),
+        Color(ColorTransparency, 100, 50, 210, 100), Color(ColorTransparency, 150, 70, 190, 90),
+        Color(ColorTransparency, 200, 90, 170, 80),
+    };
+
+    for (Color const& aColor : aColors)
+    {
+        pScanlineTransformer->writePixel(aColor);
+    }
+
+    std::vector<sal_uInt8> aExpectedBytes{ 207, 15, 45, 31, 140, 54, 235, 69, 74, 93 };
+
+    for (size_t i = 0; i < aScanLine.size(); ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(int(aExpectedBytes[i]), int(aScanLine[i]));
+    }
+
+    // Test reading - we insert a scanline in R5G6B5 format and read
+    // the colors from it
+
+    pScanlineTransformer->startLine(aScanLine.data());
+
+    std::vector<Color> aExpectedColors{
+        Color(8, 248, 120), Color(24, 228, 104), Color(48, 208, 96),
+        Color(64, 188, 88), Color(88, 168, 80),
+    };
+
+    for (size_t i = 0; i < aExpectedColors.size(); ++i)
+    {
+        Color aColor = pScanlineTransformer->readPixel();
+        CPPUNIT_ASSERT_EQUAL(aExpectedColors[i], aColor);
+    }
+}
+
 void ScanlineToolsTest::ScanlineTransformer_8bit_Palette()
 {
     std::vector<Color> aColors{
@@ -102,8 +147,7 @@ void ScanlineToolsTest::ScanlineTransformer_8bit_Palette()
     for (size_t i = 0; i < aColors.size(); ++i)
         aPalette[i] = aColors[i];
 
-    std::unique_ptr<vcl::bitmap::ScanlineTransformer> pScanlineTransformer
-        = vcl::bitmap::getScanlineTransformer(8, aPalette);
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(8, aPalette);
 
     std::vector<sal_uInt8> aScanLine(5, 0); // 5 * 1 BytesPerPixel
     pScanlineTransformer->startLine(aScanLine.data());
@@ -142,8 +186,7 @@ void ScanlineToolsTest::ScanlineTransformer_4bit_Palette()
         aPalette[i] = aColors[i];
     }
 
-    std::unique_ptr<vcl::bitmap::ScanlineTransformer> pScanlineTransformer
-        = vcl::bitmap::getScanlineTransformer(4, aPalette);
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(4, aPalette);
 
     std::vector<sal_uInt8> aScanLine(3, 0); // 6 * 0.5 BytesPerPixel
     pScanlineTransformer->startLine(aScanLine.data());
@@ -182,8 +225,7 @@ void ScanlineToolsTest::ScanlineTransformer_1bit_Palette()
     aPalette[0] = Color(10, 250, 120);
     aPalette[1] = Color(110, 150, 70);
 
-    std::unique_ptr<vcl::bitmap::ScanlineTransformer> pScanlineTransformer
-        = vcl::bitmap::getScanlineTransformer(1, aPalette);
+    auto pScanlineTransformer = vcl::bitmap::getScanlineTransformer(1, aPalette);
 
     std::vector<sal_uInt8> aScanLine(2, 0); // 13 * 1/8 BytesPerPixel
     pScanlineTransformer->startLine(aScanLine.data());
