@@ -7323,7 +7323,11 @@ static void activateNotebookbar(std::u16string_view rApp)
 
     if (aAppNode.isValid())
     {
+#ifdef EMSCRIPTEN
+        aAppNode.setNodeValue("Active", Any(OUString("notebookbar.ui")));
+#else
         aAppNode.setNodeValue("Active", Any(OUString("notebookbar_online.ui")));
+#endif
         aAppNode.commit();
     }
 }
@@ -7446,7 +7450,11 @@ static int lo_initialize(LibreOfficeKit* pThis, const char* pAppPath, const char
     static bool bPreInited = false;
     static bool bUnipoll = false;
     static bool bProfileZones = false;
+#ifdef EMSCRIPTEN
+    static bool bNotebookbar = true;
+#else
     static bool bNotebookbar = false;
+#endif
 
     { // cf. string lifetime for preinit
         std::vector<OUString> aOpts;
