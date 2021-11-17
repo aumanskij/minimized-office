@@ -809,7 +809,7 @@ void DrawViewShell::Command(const CommandEvent& rCEvt, ::sd::Window* pWin)
             bool bShouldDisableEditHyperlink = ShouldDisableEditHyperlink();
 
             if(rCEvt.IsMouseEvent())
-                GetViewFrame()->GetDispatcher()->ExecutePopup( aPopupId );
+                GetViewFrame()->GetDispatcher()->ExecutePopup(aPopupId, nullptr, nullptr, [](sal_Int16){});
             else
             {
                 //don't open contextmenu at mouse position if not opened via mouse
