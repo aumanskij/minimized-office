@@ -245,6 +245,7 @@ public:
         , protectors(protectors_)
         , result(result_)
     {
+        (void) args_;
     }
     ProtectedFixtureFunctor(const ProtectedFixtureFunctor&) = delete;
     ProtectedFixtureFunctor& operator=(const ProtectedFixtureFunctor&) = delete;
