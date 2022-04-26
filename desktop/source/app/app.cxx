@@ -426,14 +426,16 @@ Desktop::Desktop()
     , m_bServicesRegistered(false)
     , m_aBootstrapError(BE_OK)
     , m_aBootstrapStatus(BS_OK)
-    , m_firstRunTimer( "desktop::Desktop m_firstRunTimer" )
+    , m_firstRunTimer(new Timer("desktop::Desktop m_firstRunTimer"))
 {
-    m_firstRunTimer.SetTimeout(3000); // 3 sec.
-    m_firstRunTimer.SetInvokeHandler(LINK(this, Desktop, AsyncInitFirstRun));
+    m_firstRunTimer->SetTimeout(3000); // 3 sec.
+    m_firstRunTimer->SetInvokeHandler(LINK(this, Desktop, AsyncInitFirstRun));
 }
 
 Desktop::~Desktop()
 {
+// Uncommenting this delete breaks the WASM output with a runtime error
+//    delete m_firstRunTimer;
 }
 
 void Desktop::Init()
@@ -2560,7 +2562,7 @@ void Desktop::CheckFirstRun( )
 
     // use VCL timer, which won't trigger during shutdown if the
     // application exits before timeout
-    m_firstRunTimer.Start();
+    m_firstRunTimer->Start();
 
 #ifdef _WIN32
     // Check if Quickstarter should be started (on Windows only)
