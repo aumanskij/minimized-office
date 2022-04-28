@@ -50,7 +50,7 @@ endif
 ifeq ($(OS),EMSCRIPTEN)
 
 $(eval $(call gb_Executable_add_ldflags,soffice_bin,\
-    -s EXPORTED_FUNCTIONS=["_main"$(COMMA)"_libreofficekit_hook"$(COMMA)"_libreofficekit_hook_2"$(COMMA)"_lok_preinit"$(COMMA)"_lok_preinit_2"] \
+	-s EXPORTED_FUNCTIONS=["_main"$(COMMA)"_libreofficekit_hook"$(COMMA)"_libreofficekit_hook_2"$(COMMA)"_lok_preinit"$(COMMA)"_lok_preinit_2"$(COMMA)"_doc_postUnoCommand"] \
 ))
 
 endif
