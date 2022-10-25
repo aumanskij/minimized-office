@@ -166,6 +166,27 @@ public:
         maRangeY.grow(fValue);
     }
 
+    /// shift the range by a delta x and y value
+    void shift(TYPE fDeltaX, TYPE fDeltaY)
+    {
+        maRangeX.shift(fDeltaX);
+        maRangeY.shift(fDeltaY);
+    }
+
+    /// set size
+    void setSize(TYPE nWidth, TYPE nHeight)
+    {
+        maRangeX.setSize(nWidth);
+        maRangeY.setSize(nHeight);
+    }
+
+    /// set position
+    void setPosition(TYPE nX, TYPE nY)
+    {
+        maRangeX.setPosition(nX);
+        maRangeY.setPosition(nY);
+    }
+
     /// clamp value on range
     Tuple2D<TYPE> clamp(const Tuple2D<TYPE>& rTuple) const
     {
