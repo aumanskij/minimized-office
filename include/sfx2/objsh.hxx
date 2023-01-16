@@ -45,6 +45,13 @@
 #include <functional>
 #include <sfx2/AccessibilityIssue.hxx>
 
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include <emscripten/html5.h>
+#include <emscripten/val.h>
+#endif
+
 namespace weld {class Button; }
 class SbxValue;
 class SbxArray;
@@ -435,6 +442,10 @@ public:
     virtual bool                PrepareClose(bool bUI = true);
     virtual HiddenInformation   GetHiddenInformationState( HiddenInformation nStates );
     sal_Int16                   QueryHiddenInformation( HiddenWarningFact eFact, weld::Window* pParent );
+#ifdef EMSCRIPTEN
+    void                        ReadWASMFile(emscripten::val& contentArray, sal_Int32 nRead, css::uno::Sequence<sal_Int8>& aContent);
+    void                        WriteWASMFile(emscripten::val& contentArray, const OUString& rFileName);
+#endif
     bool                        IsSecurityOptOpenReadOnly() const;
     void                        SetSecurityOptOpenReadOnly( bool bOpenReadOnly );
 
