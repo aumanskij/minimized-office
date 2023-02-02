@@ -260,7 +260,7 @@ CPPUNIT_TEST_FIXTURE(SvdrawTest, testRectangleObject)
     pModel->GetItemPool().FreezeIdRanges();
 
     rtl::Reference<SdrPage> pPage(new SdrPage(*pModel, false));
-    pPage->SetSize(Size(1000, 1000));
+    pPage->setSize({ 1_cm, 1_cm });
     pModel->InsertPage(pPage.get(), 0);
 
     tools::Rectangle aSize(Point(), Size(100, 100));
@@ -557,7 +557,7 @@ CPPUNIT_TEST_FIXTURE(SvdrawTest, testRectangleObjectMove)
     pModel->GetItemPool().FreezeIdRanges();
 
     rtl::Reference<SdrPage> pPage(new SdrPage(*pModel, false));
-    pPage->SetSize(Size(50000, 50000));
+    pPage->setSize({50_cm, 50_cm});
     pModel->InsertPage(pPage.get(), 0);
 
     tools::Rectangle aRect(Point(), Size(100, 100));
@@ -579,7 +579,7 @@ CPPUNIT_TEST_FIXTURE(SvdrawTest, testRectangleObjectRotate)
     pModel->GetItemPool().FreezeIdRanges();
 
     rtl::Reference<SdrPage> pPage(new SdrPage(*pModel, false));
-    pPage->SetSize(Size(50000, 50000));
+    pPage->setSize({50_cm, 50_cm});
     pModel->InsertPage(pPage.get(), 0);
 
     {
@@ -713,6 +713,6 @@ CPPUNIT_TEST_FIXTURE(SvdrawTest, testClipVerticalTextOverflow)
     assertXPath(pDocument, "((//sdrblocktext)[7]//textsimpleportion)[1]", "x", "25417");
     assertXPath(pDocument, "((//sdrblocktext)[7]//textsimpleportion)[3]", "x", "23893");
 }
-}
+} // end anonymous namespace
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

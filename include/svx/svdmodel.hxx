@@ -38,6 +38,7 @@
 
 #include <svx/svdtypes.hxx>
 #include <svx/svxdllapi.h>
+#include <basegfx/units/Length.hxx>
 
 #include <rtl/ref.hxx>
 #include <deque>
@@ -370,6 +371,13 @@ public:
     // with the correct sizes.
     MapUnit          GetScaleUnit() const                       { return m_eObjUnit; }
     void             SetScaleUnit(MapUnit eMap);
+
+    gfx::LengthUnit getUnit() const
+    {
+        return m_eObjUnit == MapUnit::MapTwip
+                ? gfx::LengthUnit::twip
+                : gfx::LengthUnit::hmm;
+    }
 
     // maximal size e.g. for auto growing texts
     const Size&      GetMaxObjSize() const                      { return m_aMaxObjSize; }
