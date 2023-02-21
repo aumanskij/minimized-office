@@ -173,8 +173,20 @@ public:
  */
 class SVXCORE_DLLPUBLIC SdrObjGeoData
 {
+private:
+    gfx::Range2DLWrap maBoundRange;
+
 public:
-    tools::Rectangle                   aBoundRect;
+    gfx::Range2DLWrap const& getBoundRange() const
+    {
+        return maBoundRange;
+    }
+
+    void setBoundRange(gfx::Range2DLWrap const& rRange)
+    {
+        maBoundRange = rRange;
+    }
+
     Point                       aAnchor;
     std::unique_ptr<SdrGluePointList>
                                 pGPL;
@@ -185,7 +197,6 @@ public:
     bool                        mbVisible;
     SdrLayerID                  mnLayerID;
 
-public:
     SdrObjGeoData();
     virtual ~SdrObjGeoData();
 };
@@ -416,6 +427,7 @@ public:
     // non-useful BoundRects sometimes) i rename that method from GetBoundRect() to
     // GetCurrentBoundRect().
     virtual const tools::Rectangle& GetCurrentBoundRect() const;
+    virtual const gfx::Range2DLWrap& getCurrentBoundRange() const;
 
     // To have a possibility to get the last calculated BoundRect e.g for producing
     // the first rectangle for repaints (old and new need to be used) without forcing
