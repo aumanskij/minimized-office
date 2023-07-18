@@ -310,14 +310,16 @@ void writeSdrFillAttribute(::tools::XmlWriter& rWriter,
         {
             if (0 == a)
                 rWriter.attribute("startColor",
-                                  convertColorToString(rColorStops[a].getStopColor()));
+                                  convertColorToString(rColorStops.getStops()[a].getStopColor()));
             else if (rColorStops.size() == a + 1)
-                rWriter.attribute("endColor", convertColorToString(rColorStops[a].getStopColor()));
+                rWriter.attribute("endColor",
+                                  convertColorToString(rColorStops.getStops()[a].getStopColor()));
             else
             {
                 rWriter.startElement("colorStop");
-                rWriter.attribute("stopOffset", rColorStops[a].getStopOffset());
-                rWriter.attribute("stopColor", convertColorToString(rColorStops[a].getStopColor()));
+                rWriter.attribute("stopOffset", rColorStops.getStops()[a].getStopOffset());
+                rWriter.attribute("stopColor",
+                                  convertColorToString(rColorStops.getStops()[a].getStopColor()));
                 rWriter.endElement();
             }
         }
@@ -540,7 +542,7 @@ void Primitive2dXmlDump::dump(
     pStream->ReadBytes(pBuffer.get(), nSize);
     pBuffer[nSize] = 0;
 
-    printf ("%s\n", pBuffer.get());
+    printf("%s\n", pBuffer.get());
 }
 
 namespace

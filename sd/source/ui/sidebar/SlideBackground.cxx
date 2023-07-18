@@ -1289,21 +1289,11 @@ IMPL_LINK_NOARG( SlideBackground, ModifyMarginHdl, weld::ComboBox&, void )
 
 basegfx::BColorStops SlideBackground::createColorStops()
 {
-    basegfx::BColorStops aColorStops;
+    basegfx::BColor aStartColor = mxFillGrad1->GetSelectEntryColor().getBColor();
+    basegfx::BColor aEndColor = mxFillGrad2->GetSelectEntryColor().getBColor();
 
-    if (maColorStops.size() >= 2)
-    {
-        aColorStops = maColorStops;
-        aColorStops.front() = basegfx::BColorStop(maColorStops.front().getStopOffset(),
-                                                  mxFillGrad1->GetSelectEntryColor().getBColor());
-        aColorStops.back() = basegfx::BColorStop(maColorStops.back().getStopOffset(),
-                                                 mxFillGrad2->GetSelectEntryColor().getBColor());
-    }
-    else
-    {
-        aColorStops.emplace_back(0.0, mxFillGrad1->GetSelectEntryColor().getBColor());
-        aColorStops.emplace_back(1.0, mxFillGrad2->GetSelectEntryColor().getBColor());
-    }
+    basegfx::BColorStops aColorStops = maColorStops;
+    aColorStops.setStartAndEndColors(aStartColor, aEndColor);
 
     return aColorStops;
 }

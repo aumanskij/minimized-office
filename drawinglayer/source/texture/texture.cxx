@@ -153,7 +153,7 @@ namespace drawinglayer::texture
                 // created gradient geometry.
                 // The simplest way is to temporarily add an entry to the local
                 // ColorStops for this at 1.0 (using same color)
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // prepare unit range transform
@@ -225,7 +225,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 
@@ -301,7 +301,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // temporarily add a ColorStop entry
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // prepare unit range transform
@@ -358,7 +358,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 
@@ -421,7 +421,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // temporarily add a ColorStop entry
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // outer loop over ColorStops, each is from cs_l to cs_r
@@ -462,7 +462,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 
@@ -524,7 +524,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // temporarily add a ColorStop entry
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // prepare vars dependent on aspect ratio
@@ -572,7 +572,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 
@@ -634,7 +634,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // temporarily add a ColorStop entry
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // outer loop over ColorStops, each is from cs_l to cs_r
@@ -675,7 +675,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 
@@ -737,7 +737,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // temporarily add a ColorStop entry
-                mnColorStops.emplace_back(1.0, mnColorStops.back().getStopColor());
+                mnColorStops.addStop(1.0, mnColorStops.back().getStopColor());
             }
 
             // prepare vars dependent on aspect ratio
@@ -785,7 +785,7 @@ namespace drawinglayer::texture
             if (bPenultimateUsed)
             {
                 // correct temporary change
-                mnColorStops.pop_back();
+                mnColorStops.getStops().pop_back();
             }
         }
 

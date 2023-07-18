@@ -830,8 +830,8 @@ void DrawingML::WriteGradientFill(
     // export GradientStops (with alpha)
     mpFS->startElementNS(XML_a, XML_gsLst);
 
-    basegfx::BColorStops::const_iterator aCurrColor(aColorStops.begin());
-    basegfx::BColorStops::const_iterator aCurrAlpha(aAlphaStops.begin());
+    auto aCurrColor(aColorStops.begin());
+    auto aCurrAlpha(aAlphaStops.begin());
 
     while (aCurrColor != aColorStops.end() && aCurrAlpha != aAlphaStops.end())
     {

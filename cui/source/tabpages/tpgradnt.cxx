@@ -652,21 +652,11 @@ sal_Int32 SvxGradientTabPage::SearchGradientList(std::u16string_view rGradientNa
 
 basegfx::BColorStops SvxGradientTabPage::createColorStops()
 {
-    basegfx::BColorStops aColorStops;
+    basegfx::BColor aStartColor = m_xLbColorFrom->GetSelectEntryColor().getBColor();
+    basegfx::BColor aEndColor = m_xLbColorTo->GetSelectEntryColor().getBColor();
 
-    if(m_aColorStops.size() >= 2)
-    {
-        aColorStops = m_aColorStops;
-        aColorStops.front() = basegfx::BColorStop(m_aColorStops.front().getStopOffset(),
-                                                  m_xLbColorFrom->GetSelectEntryColor().getBColor());
-        aColorStops.back() = basegfx::BColorStop(m_aColorStops.back().getStopOffset(),
-                                                 m_xLbColorTo->GetSelectEntryColor().getBColor());
-    }
-    else
-    {
-        aColorStops.emplace_back(0.0, m_xLbColorFrom->GetSelectEntryColor().getBColor());
-        aColorStops.emplace_back(1.0, m_xLbColorTo->GetSelectEntryColor().getBColor());
-    }
+    basegfx::BColorStops aColorStops = m_aColorStops;
+    aColorStops.setStartAndEndColors(aStartColor, aEndColor);
 
     return aColorStops;
 }

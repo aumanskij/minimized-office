@@ -1369,23 +1369,13 @@ sal_Int32 AreaPropertyPanelBase::GetSelectedTransparencyTypeIndex() const
 
 basegfx::BColorStops AreaPropertyPanelBase::createColorStops()
 {
-    basegfx::BColorStops aColorStops;
+    basegfx::BColor aStartColor = mxLbFillGradFrom->GetSelectEntryColor().getBColor();
+    basegfx::BColor aEndColor = mxLbFillGradTo->GetSelectEntryColor().getBColor();
 
-    if (maColorStops.size() >= 2)
-    {
-        aColorStops = maColorStops;
-        aColorStops.front() = basegfx::BColorStop(maColorStops.front().getStopOffset(),
-                                                  mxLbFillGradFrom->GetSelectEntryColor().getBColor());
-        aColorStops.back() = basegfx::BColorStop(maColorStops.back().getStopOffset(),
-                                                 mxLbFillGradTo->GetSelectEntryColor().getBColor());
-    }
-    else
-    {
-        aColorStops.emplace_back(0.0, mxLbFillGradFrom->GetSelectEntryColor().getBColor());
-        aColorStops.emplace_back(1.0, mxLbFillGradTo->GetSelectEntryColor().getBColor());
-    }
+    basegfx::BColorStops aColorStops = maColorStops;
+    aColorStops.setStartAndEndColors(aStartColor, aEndColor);
 
-    return aColorStops;
+   return aColorStops;
 }
 
 } // end of namespace svx::sidebar

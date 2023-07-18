@@ -3733,7 +3733,7 @@ void RtfAttributeOutput::FormatFillGradient(const XFillGradientItem& rFillGradie
         // assume what was formally GradientStyle_AXIAL, see above and also refer to
         // FillModel::pushToPropMap 'fFocus' value and usage.
         // The 2nd color is the in-between color, use it
-        const Color aEndColor(rColorStops[1].getStopColor());
+        const Color aEndColor(rColorStops.getStop(1).getStopColor());
         m_aFlyProperties.push_back(std::make_pair<OString, OString>(
             "fillBackColor", OString::number(wwUtility::RGBToBGR(aEndColor))));
         m_aFlyProperties.push_back(
