@@ -38,7 +38,9 @@ $(eval $(call gb_Library_use_static_libraries,LanguageTool,\
 $(eval $(call gb_Library_use_externals,LanguageTool,\
 	boost_headers \
 	icuuc \
-	curl \
+	$(if $(ENABLE_CURL), \
+		curl \
+	)\
 ))
 
 $(eval $(call gb_Library_use_custom_headers,LanguageTool,\
