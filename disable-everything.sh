@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+
+export CC=/usr/lib/ccache/bin/gcc
+export CXX=/usr/lib/ccache/bin/g++
+
+./autogen.sh \
+	CC="$CC" \
+	CXX="$CXX" \
+	CC_FOR_BUILD="$CC" \
+	CXX_FOR_BUILD="$CXX" \
+	SYSTEM_LIBXML_FOR_BUILD=FALSE \
+	SYSTEM_LIBXSLT_FOR_BUILD=FALSE \
+	--enable-wasm-strip \
+	--enable-pch=no \
+	--disable-lto \
+	--disable-avmedia \
+	--disable-breakpad \
+	--disable-build-opensymbol \
+	--disable-bundle-mariadb \
+	--disable-cairo-canvas \
+	--disable-ccache \
+	--disable-coinmp \
+	--disable-community-flavor \
+	--disable-compiler-plugins-analyzer-pch \
+	--disable-crashdump \
+	--disable-cups \
+	--disable-curl \
+	--disable-cve-tests \
+	--disable-database-connectivity \
+	--disable-dbus \
+	--disable-dconf \
+	--disable-debug \
+	--disable-dependency-tracking \
+	--disable-epm \
+	--disable-evolution2 \
+	--disable-ext-nlpsolver \
+	--disable-ext-wiki-publisher \
+	--disable-extension-integration \
+	--disable-extension-update \
+	--disable-extensions \
+	--disable-firebird-sdbc \
+	--disable-gdb-index \
+	--disable-gio \
+	--disable-gpgmepp \
+	--disable-gstreamer-1-0 \
+	--disable-gtk3 \
+	--disable-gtk3-kde5 \
+	--disable-gui \
+	--disable-kf5 \
+	--disable-largefile \
+	--disable-ldap \
+	--disable-libcmis \
+	--disable-librelogo \
+	--disable-lotuswordpro \
+	--disable-lpsolve \
+	--disable-mariadb-sdbc \
+	--disable-mergelibs \
+	--disable-nss \
+	--disable-odk \
+	--disable-online-update \
+	--disable-opencl \
+	--disable-option-checking \
+	--disable-pdfimport \
+	--disable-pdfium \
+	--disable-poppler \
+	--disable-postgresql-sdbc \
+	--disable-python \
+	--disable-qt5 \
+	--disable-qt6 \
+	--disable-randr \
+	--disable-release-build \
+	--disable-report-builder \
+	--disable-runtime-optimizations \
+	--disable-scripting \
+	--disable-scripting-beanshell \
+	--disable-scripting-javascript \
+	--disable-sdremote \
+	--disable-sdremote-bluetooth \
+	--disable-skia \
+	--disable-split-debug \
+	--disable-xmlhelp \
+	--disable-zxing \
+	--with-parallelism=8 \
+	--with-tls=openssl \
+	--with-x \
+	--with-latest-c++ \
+	--without-doxygen \
+	--without-fonts \
+	--without-gdrive-client-id \
+	--without-gdrive-client-secret \
+	--without-help \
+	--without-helppack-integration \
+	--without-java \
+	--without-lxml \
+	--without-webdav \
+	--without-galleries \
+	--without-myspell-dicts \
+	--without-system-abseil \
+	--without-system-altlinuxhyph \
+	--without-system-beanshell \
+	--without-system-bluez \
+	--without-system-boost \
+	--without-system-box2d \
+	--without-system-bzip2 \
+	--without-system-cairo \
+	--without-system-clucene \
+	--without-system-coinmp \
+	--without-system-cppunit \
+	--without-system-curl \
+	--without-system-dragonbox \
+	--without-system-epoxy \
+	--without-system-expat \
+	--without-system-firebird \
+	--without-system-glm \
+	--without-system-gpgmepp \
+	--without-system-graphite \
+	--without-system-harfbuzz \
+	--without-system-headers \
+	--without-system-hsqldb \
+	--without-system-hunspell \
+	--without-system-icu \
+	--without-system-jars \
+	--without-system-jfreereport \
+	--without-system-jpeg \
+	--without-system-lcms2 \
+	--without-system-libabw \
+	--without-system-libatomic_ops \
+	--without-system-libcdr \
+	--without-system-libcmis \
+	--without-system-libebook \
+	--without-system-libeot \
+	--without-system-libepubgen \
+	--without-system-libetonyek \
+	--without-system-libexttextcat \
+	--without-system-libfixmath \
+	--without-system-libfreehand \
+	--without-system-liblangtag \
+	--without-system-libmspub \
+	--without-system-libmwaw \
+	--without-system-libnumbertext \
+	--without-system-libodfgen \
+	--without-system-libpagemaker \
+	--without-system-libpng \
+	--without-system-libqxp \
+	--without-system-librevenge \
+	--without-system-libs \
+	--without-system-libstaroffice \
+	--without-system-libtiff \
+	--without-system-libtommath \
+	--without-system-libvisio \
+	--without-system-libwebp \
+	--without-system-libwpd \
+	--without-system-libwpg \
+	--without-system-libwps \
+	--without-system-libxml \
+	--without-system-libzmf \
+	--without-system-lpsolve \
+	--without-system-mariadb \
+	--without-system-mdds \
+	--without-system-mythes \
+	--without-system-nss \
+	--without-system-odbc \
+	--without-system-openjpeg \
+	--without-system-openldap \
+	--without-system-openssl \
+	--without-system-orcus \
+	--without-system-poppler \
+	--without-system-postgresql \
+	--without-system-redland \
+	--without-system-rhino \
+	--without-system-sane \
+	--without-system-xmlsec \
+	--without-system-zlib \
+	--without-system-zxing \
+	--without-valgrind
+
+replace_var_in_conf() {
+	file="$1"
+	variable_name="$2"
+	variable_value="$3"
+	sed -i "s@\\($variable_name=\\).*@\\1$variable_value@" "$file"
+}
+
+replace_var_from_host_to_build() {
+	variable_name="$1"
+	variable_value="$(sed -n "s@export $variable_name=@@p" config_host.mk)"
+	replace_var_in_conf config_build.mk "export $variable_name" "$variable_value"
+}
+
+#replace_var_from_host_to_build LIBXML_CFLAGS
+#replace_var_from_host_to_build LIBXML_LIBS
+#replace_var_in_conf config_host.mk "^SYSTEM_[^=]*" "FALSE"
