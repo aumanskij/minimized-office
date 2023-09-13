@@ -130,7 +130,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--without-system-libebook \
 	--without-system-libeot \
 	--without-system-libepubgen \
-	--without-system-libetonyek \
 	--without-system-libexttextcat \
 	--without-system-libfixmath \
 	--without-system-libfreehand \

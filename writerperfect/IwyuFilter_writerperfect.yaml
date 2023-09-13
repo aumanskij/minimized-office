@@ -73,9 +73,6 @@ excludelist:
     writerperfect/source/impress/StarOfficePresentationImportFilter.hxx:
     # Needed for direct member access
     - DocumentHandlerForOdp.hxx
-    writerperfect/source/impress/KeynoteImportFilter.hxx:
-    # Needed for direct member access
-    - DocumentHandlerForOdp.hxx
     writerperfect/source/writer/EBookImportFilter.hxx:
     # Needed for direct member access
     - DocumentHandlerForOdt.hxx
@@ -119,9 +116,6 @@ excludelist:
     writerperfect/source/common/DocumentHandler.cxx:
     # Actually used
     - com/sun/star/xml/sax/XDocumentHandler.hpp
-    writerperfect/source/calc/NumbersImportFilter.cxx:
-    # Wrapper header for external library
-    - libetonyek/libetonyek.h
     writerperfect/source/calc/MWAWCalcImportFilter.cxx:
     # Wrapper header for external library
     - libmwaw/libmwaw.hxx
@@ -170,12 +164,6 @@ excludelist:
     writerperfect/source/impress/StarOfficePresentationImportFilter.cxx:
     # Wrapper header for external library
     - libstaroffice/libstaroffice.hxx
-    writerperfect/source/impress/KeynoteImportFilter.cxx:
-    # Wrapper header for external library
-    - libetonyek/libetonyek.h
-    writerperfect/source/writer/PagesImportFilter.cxx:
-    # Wrapper header for external library
-    - libetonyek/libetonyek.h
     writerperfect/source/writer/MWAWImportFilter.cxx:
     # Wrapper header for external library
     - libmwaw/libmwaw.hxx

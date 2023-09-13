@@ -65,7 +65,6 @@ $(eval $(call gb_Library_use_externals,wpftwriter,\
 	abw \
 	boost_headers \
 	ebook \
-    $(if $(ENABLE_WASM_STRIP_SWEXPORTS),,etonyek) \
 	icu_headers \
 	icui18n \
 	icuuc \
@@ -96,7 +95,6 @@ $(eval $(call gb_Library_add_exception_objects,wpftwriter,\
 	writerperfect/source/writer/EBookImportFilter \
 	writerperfect/source/writer/MSWorksImportFilter \
 	writerperfect/source/writer/MWAWImportFilter \
-	writerperfect/source/writer/PagesImportFilter \
 	writerperfect/source/writer/WordPerfectImportFilter \
 ))
 endif

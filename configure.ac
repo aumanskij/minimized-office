@@ -3079,7 +3079,6 @@ if test "$enable_wasm_strip" = "yes"; then
     test_libepubgen=no
     test_libcdr=no
     test_libcmis=no
-    test_libetonyek=no
     test_libfreehand=no
     test_libmspub=no
     test_libpagemaker=no
@@ -9599,9 +9598,6 @@ libo_CHECK_SYSTEM_MODULE([libmspub],[MSPUB],[libmspub-0.1])
 
 libo_CHECK_SYSTEM_MODULE([libmwaw],[MWAW],[libmwaw-0.3 >= 0.3.21])
 libo_PKG_VERSION([MWAW], [libmwaw-0.3], [0.3.21])
-
-libo_CHECK_SYSTEM_MODULE([libetonyek],[ETONYEK],[libetonyek-0.1])
-libo_PKG_VERSION([ETONYEK], [libetonyek-0.1], [0.1.10])
 
 libo_CHECK_SYSTEM_MODULE([libfreehand],[FREEHAND],[libfreehand-0.1])
 

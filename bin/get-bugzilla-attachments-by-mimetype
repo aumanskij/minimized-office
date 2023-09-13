@@ -281,7 +281,6 @@ launchpad_pkgs = (
     "libabw",
     "libcdr",
     "libe-book",
-    "libetonyek",
     "libfreehand",
     "libmspub",
     "libmwaw",

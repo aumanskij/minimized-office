@@ -50,7 +50,6 @@ $(eval $(call gb_Library_use_libraries,wpftcalc,\
 
 $(eval $(call gb_Library_use_externals,wpftcalc,\
 	boost_headers \
-	$(if $(ENABLE_WASM_STRIP_SCEXPORTS),,etonyek) \
 	odfgen \
 	revenge \
 	mwaw \
@@ -63,12 +62,6 @@ $(eval $(call gb_Library_use_externals,wpftcalc,\
 	icui18n \
 	icuuc \
 ))
-
-ifneq ($(ENABLE_WASM_STRIP_SCEXPORTS),TRUE)
-$(eval $(call gb_Library_add_exception_objects,wpftcalc,\
-	writerperfect/source/calc/NumbersImportFilter \
-))
-endif
 
 $(eval $(call gb_Library_add_exception_objects,wpftcalc,\
 	writerperfect/source/calc/MSWorksCalcImportFilter \
