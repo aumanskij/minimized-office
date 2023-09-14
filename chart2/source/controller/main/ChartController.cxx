@@ -1536,7 +1536,9 @@ void ChartController::impl_invalidateAccessible()
         if(xInit.is())
         {
             //empty arguments -> invalid accessible
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
             dynamic_cast<AccessibleChartView&>(*xInit).initialize();
+#endif
         }
     }
 }
@@ -1546,9 +1548,11 @@ void ChartController::impl_initializeAccessible()
     auto pChartWindow(GetChartWindow());
     if( !pChartWindow )
         return;
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
     Reference< XInterface > xInit( pChartWindow->GetAccessible(false) );
     if(xInit.is())
         impl_initializeAccessible( dynamic_cast<AccessibleChartView&>(*xInit) );
+#endif
 }
 void ChartController::impl_initializeAccessible( AccessibleChartView& rAccChartView )
 {
@@ -1564,7 +1568,9 @@ void ChartController::impl_initializeAccessible( AccessibleChartView& rAccChartV
         }
     }
 
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
     rAccChartView.initialize(*this, getChartModel(), m_xChartView, xParent, m_xViewWindow);
+#endif
 }
 
 const o3tl::sorted_vector< OUString >& ChartController::impl_getAvailableCommands()

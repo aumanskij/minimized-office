@@ -88,8 +88,10 @@ void AccessibleChartElement::InitTextEdit()
     {
         // get hard reference
         rtl::Reference< ::chart::ChartController > xChartController( GetInfo().m_xChartController );
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
         if( xChartController.is())
             m_xTextHelper = xChartController->createAccessibleTextContext();
+#endif
     }
 
     if( !m_xTextHelper.is())

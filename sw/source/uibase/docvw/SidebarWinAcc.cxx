@@ -17,6 +17,8 @@
  *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
  */
 
+#include <config_wasm_strip.h>
+
 #include "SidebarWinAcc.hxx"
 #include <AnnotationWin.hxx>
 
@@ -59,11 +61,13 @@ class SidebarWinAccessibleContext : public VCLXAccessibleComponent
 
             css::uno::Reference< css::accessibility::XAccessible > xAccParent;
 
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
             if ( mpAnchorFrame &&
                  mrViewShell.GetAccessibleMap() )
             {
                 xAccParent = mrViewShell.GetAccessibleMap()->GetContext( mpAnchorFrame, false );
             }
+#endif
 
             return xAccParent;
         }
@@ -74,12 +78,14 @@ class SidebarWinAccessibleContext : public VCLXAccessibleComponent
 
             sal_Int64 nIndex( -1 );
 
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
             if ( mpAnchorFrame && GetWindow() &&
                  mrViewShell.GetAccessibleMap() )
             {
                 nIndex = mrViewShell.GetAccessibleMap()->GetChildIndex( *mpAnchorFrame,
                                                                         *GetWindow() );
             }
+#endif
 
             return nIndex;
         }

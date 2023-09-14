@@ -1842,7 +1842,9 @@ uno::Reference< css::accessibility::XAccessible >
 
 void SwPagePreview::ApplyAccessibilityOptions()
 {
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
     GetViewShell()->ApplyAccessibilityOptions();
+#endif
 }
 
 void SwPagePreview::ShowHScrollbar(bool bShow)

@@ -215,15 +215,13 @@ void ChartController::executeDispatch_InsertSpecialCharacter()
     pOutlinerView->ShowCursor();
 }
 
+#if !ENABLE_WASM_STRIP_ACCESSIBILITY
 rtl::Reference< ::chart::AccessibleTextHelper >
     ChartController::createAccessibleTextContext()
 {
-#if !ENABLE_WASM_STRIP_ACCESSIBILITY
     return new AccessibleTextHelper( m_pDrawViewWrapper.get() );
-#else
-    return {};
-#endif
 }
+#endif
 
 } //namespace chart
 
