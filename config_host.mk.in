@@ -764,6 +764,7 @@ export ZLIB_LIBS=$(gb_SPACE)@ZLIB_LIBS@
 export ZMF_CFLAGS=$(gb_SPACE)@ZMF_CFLAGS@
 export ZMF_LIBS=$(gb_SPACE)@ZMF_LIBS@
 export GET_TASK_ALLOW_ENTITLEMENT=@GET_TASK_ALLOW_ENTITLEMENT@
+export USE_CRYPTO_NONE=@USE_CRYPTO_NONE@
 
 # lang-related stuff
 include $(BUILDDIR)/config_$(gb_Side)_lang.mk

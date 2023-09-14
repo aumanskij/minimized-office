@@ -25,8 +25,13 @@
  */
 #define USE_CRYPTO_NSS 0
 
+/*
+ * Use no crypto at all
+ */
+#define USE_CRYPTO_NONE 0
+
 #if USE_CRYPTO_MSCAPI || USE_CRYPTO_NSS
-#define USE_CRYPTO_ANY 1
+#define USE_CRYPTO_ANY !USE_CRYPTO_NONE
 #else
 #define USE_CRYPTO_ANY 0
 #endif

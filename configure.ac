@@ -2053,6 +2053,11 @@ libo_FUZZ_ARG_ENABLE(librelogo,
         [Do not build LibreLogo.]),
 ,enable_librelogo=yes)
 
+AC_ARG_ENABLE(custom-strip,
+    AS_HELP_STRING([--enable-custom-strip],
+        [Strip something.]),
+,)
+
 AC_ARG_ENABLE(wasm-strip,
     AS_HELP_STRING([--enable-wasm-strip],
         [Strip the static build like for WASM/emscripten platform.]),
@@ -3042,6 +3047,20 @@ if test $_os != iOS -a $_os != Android -a "$enable_fuzzers" != "yes"; then
     if test "$_os" != Emscripten; then
         AC_DEFINE(HAVE_FEATURE_MULTIUSER_ENVIRONMENT)
     fi
+fi
+
+if test "$enable_custom_strip" = "yes"; then
+    AC_DEFINE(ENABLE_WASM_STRIP_EXTRA)
+    AC_DEFINE(ENABLE_WASM_STRIP_HUNSPELL)
+    AC_DEFINE(ENABLE_WASM_STRIP_GUESSLANG)
+    AC_DEFINE(ENABLE_WASM_STRIP_LANGUAGETOOL)
+    AC_DEFINE(USE_CRYPTO_NONE)
+
+    AC_SUBST(ENABLE_WASM_STRIP_EXTRA)
+    AC_SUBST(ENABLE_WASM_STRIP_HUNSPELL)
+    AC_SUBST(ENABLE_WASM_STRIP_GUESSLANG)
+    AC_SUBST(ENABLE_WASM_STRIP_LANGUAGETOOL)
+    AC_SUBST(USE_CRYPTO_NONE)
 fi
 
 # explicitly doesn't include enable_gtk3=no and enable_qt5=yes, so it should
@@ -10491,7 +10510,12 @@ AC_SUBST(LIBTOMMATH_LIBS)
 dnl ===================================================================
 dnl Check for system curl
 dnl ===================================================================
-libo_CHECK_SYSTEM_MODULE([curl],[CURL],[libcurl >= 7.68.0],enabled)
+if test "$enable_curl" = "yes"; then
+    libo_CHECK_SYSTEM_MODULE([curl],[CURL],[libcurl >= 7.68.0],enabled)
+    ENABLE_CURL=TRUE
+    AC_DEFINE(HAVE_FEATURE_CURL)
+fi
+AC_SUBST(ENABLE_CURL)
 
 dnl ===================================================================
 dnl Check for system boost

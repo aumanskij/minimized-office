@@ -144,4 +144,9 @@
  */
 #define HAVE_FEATURE_JUMBO_SHEETS 0
 
+/*
+ * Whether curl is enabled
+ */
+#define HAVE_FEATURE_CURL 0
+
 #endif

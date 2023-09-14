@@ -10,8 +10,9 @@ export CXX=/usr/lib/ccache/bin/g++
 	CXX_FOR_BUILD="$CXX" \
 	SYSTEM_LIBXML_FOR_BUILD=FALSE \
 	SYSTEM_LIBXSLT_FOR_BUILD=FALSE \
-	--enable-wasm-strip \
 	--enable-pch=no \
+	--enable-nss \
+	--enable-custom-strip \
 	--disable-lto \
 	--disable-avmedia \
 	--disable-breakpad \
@@ -26,7 +27,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-cups \
 	--disable-curl \
 	--disable-cve-tests \
-	--disable-database-connectivity \
 	--disable-dbus \
 	--disable-dconf \
 	--disable-debug \
@@ -41,11 +41,9 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-firebird-sdbc \
 	--disable-gdb-index \
 	--disable-gio \
-	--disable-gpgmepp \
 	--disable-gstreamer-1-0 \
 	--disable-gtk3 \
 	--disable-gtk3-kde5 \
-	--disable-gui \
 	--disable-kf5 \
 	--disable-largefile \
 	--disable-ldap \
@@ -55,7 +53,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-lpsolve \
 	--disable-mariadb-sdbc \
 	--disable-mergelibs \
-	--disable-nss \
 	--disable-odk \
 	--disable-online-update \
 	--disable-opencl \
@@ -81,7 +78,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-xmlhelp \
 	--disable-zxing \
 	--with-parallelism=8 \
-	--with-tls=openssl \
 	--with-x \
 	--with-latest-c++ \
 	--without-doxygen \
@@ -142,7 +138,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--without-system-libpng \
 	--without-system-libqxp \
 	--without-system-librevenge \
-	--without-system-libs \
 	--without-system-libstaroffice \
 	--without-system-libtiff \
 	--without-system-libtommath \
