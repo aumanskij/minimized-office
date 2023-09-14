@@ -400,14 +400,6 @@ postprocess_DEPS_gnome := main
 postprocess_FILES_gnome += $(postprocess_MOD)/org/openoffice/ucb/Configuration-gio.xcu
 endif
 
-ifeq ($(ENABLE_ONLINE_UPDATE),TRUE)
-postprocess_XCDS += onlineupdate.xcd
-postprocess_DEPS_onlineupdate := main
-postprocess_FILES_onlineupdate := \
-	$(call gb_XcuModuleTarget_get_target,extensions/source/update/check)/org/openoffice/Office/Addons-onlineupdate.xcu \
-	$(call gb_XcuModuleTarget_get_target,extensions/source/update/check)/org/openoffice/Office/Jobs-onlineupdate.xcu
-endif
-
 ifeq ($(ENABLE_OPENGL_TRANSITIONS),TRUE)
 postprocess_XCDS += ogltrans.xcd
 postprocess_DEPS_ogltrans := main
@@ -559,7 +551,6 @@ $(call gb_CustomTarget_get_workdir,postprocess/registry)/registry_$(1).list : \
 	$(if $(filter DBCONNECTIVITY,$(BUILD_TYPE)),\
 		$(foreach driver,$(postprocess_DRIVERS),$(call gb_Configuration_get_target,$(driver))) \
 	) \
-	$(if $(filter TRUE,$(ENABLE_ONLINE_UPDATE)),$(call gb_Configuration_get_target,updchk)) \
 	| $(call gb_CustomTarget_get_workdir,postprocess/registry)/.dir
 
 endef
@@ -637,8 +628,6 @@ $(call gb_CustomTarget_get_workdir,postprocess/registry)/registry_%.list :
 	         $(if $(filter DBCONNECTIVITY,$(BUILD_TYPE)),\
 	             $(foreach driver,$(postprocess_DRIVERS),\
 	                 $(call gb_XcuResTarget_get_target,$(driver)/$*/)))\
-	         $(if $(filter TRUE,$(ENABLE_ONLINE_UPDATE)),\
-	             $(call gb_XcuResTarget_get_target,updchk/$*/))\
 	         -name "*.xcu" \
 		| LC_ALL=C $(SORT) \
 	        | $(gb_AWK) 'BEGIN{print "<list>"} \

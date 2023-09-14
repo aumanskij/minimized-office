@@ -35,7 +35,6 @@ $(eval $(call gb_StaticLibrary_use_unpacked,libcmis,libcmis))
 
 $(eval $(call gb_StaticLibrary_use_externals,libcmis,\
 	boost_headers \
-	curl \
 	libxml2 \
 ))
 

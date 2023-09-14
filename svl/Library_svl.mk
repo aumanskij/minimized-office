@@ -21,10 +21,6 @@ $(eval $(call gb_Library_Library,svl))
 
 $(eval $(call gb_Library_use_externals,svl,\
     boost_headers \
-    $(if $(ENABLE_CURL), \
-        $(if $(filter LINUX MACOSX ANDROID iOS %BSD SOLARIS HAIKU,$(OS)), \
-            curl) \
-    )\
     dtoa \
     icu_headers \
     icuuc \

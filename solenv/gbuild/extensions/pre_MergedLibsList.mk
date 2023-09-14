@@ -90,7 +90,6 @@ gb_MERGE_LIBRARY_LIST := \
 	ucptdoc1 \
 	unordf \
 	unoxml \
-	updatefeed \
 	utl \
 	uui \
 	vbaevents \

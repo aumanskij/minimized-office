@@ -2657,47 +2657,6 @@ endef
 endif # !SYSTEM_LIBWEBP
 
 
-ifneq ($(SYSTEM_CURL),)
-
-define gb_LinkTarget__use_curl
-$(call gb_LinkTarget_add_defs,$(1),\
-	-DSYSTEM_CURL \
-)
-$(call gb_LinkTarget_set_include,$(1),\
-	$$(INCLUDE) \
-	$(CURL_CFLAGS) \
-)
-$(call gb_LinkTarget_add_libs,$(1),$(CURL_LIBS))
-
-endef
-
-else # !SYSTEM_CURL
-
-$(eval $(call gb_Helper_register_packages_for_install,ooo,\
-	curl \
-))
-
-define gb_LinkTarget__use_curl
-$(call gb_LinkTarget_use_package,$(1),curl)
-$(call gb_LinkTarget_set_include,$(1),\
-	-I$(call gb_UnpackedTarball_get_dir,curl/include) \
-	$$(INCLUDE) \
-)
-
-ifeq ($(COM),MSC)
-$(call gb_LinkTarget_add_libs,$(1),\
-	$(call gb_UnpackedTarball_get_dir,curl)/builds/libcurl-vc12-$(gb_MSBUILD_PLATFORM)-$(gb_MSBUILD_CONFIG)-dll-zlib-static-ipv6-sspi-schannel/lib/libcurl$(if $(MSVC_USE_DEBUG_RUNTIME),_debug).lib \
-)
-else
-$(call gb_LinkTarget_add_libs,$(1),\
-	-L$(call gb_UnpackedTarball_get_dir,curl)/lib/.libs -lcurl \
-)
-endif
-
-endef
-
-endif # SYSTEM_CURL
-
 ifeq ($(ENABLE_VALGRIND),TRUE)
 
 define gb_LinkTarget__use_valgrind

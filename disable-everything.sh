@@ -25,7 +25,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-compiler-plugins-analyzer-pch \
 	--disable-crashdump \
 	--disable-cups \
-	--disable-curl \
 	--disable-cve-tests \
 	--disable-dbus \
 	--disable-dconf \
@@ -36,7 +35,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-ext-nlpsolver \
 	--disable-ext-wiki-publisher \
 	--disable-extension-integration \
-	--disable-extension-update \
 	--disable-extensions \
 	--disable-firebird-sdbc \
 	--disable-gdb-index \
@@ -54,7 +52,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-mariadb-sdbc \
 	--disable-mergelibs \
 	--disable-odk \
-	--disable-online-update \
 	--disable-opencl \
 	--disable-option-checking \
 	--disable-pdfimport \
@@ -102,7 +99,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--without-system-clucene \
 	--without-system-coinmp \
 	--without-system-cppunit \
-	--without-system-curl \
 	--without-system-dragonbox \
 	--without-system-epoxy \
 	--without-system-expat \

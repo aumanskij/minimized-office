@@ -18,7 +18,6 @@ $(eval $(call gb_Module_add_targets,ucb,\
 	Library_ucpexpand1 \
 	Library_ucpext \
 	Library_ucpfile1 \
-	$(if $(ENABLE_CURL),Library_ucpftp1) \
 	Library_ucphier1 \
 	Library_ucpimage \
 	Library_ucppkg1 \

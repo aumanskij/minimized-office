@@ -3068,7 +3068,6 @@ if test "$enable_wasm_strip" = "yes"; then
     enable_cmis=no
     enable_coinmp=no
     enable_cups=no
-    test "$_os" = Emscripten && enable_curl=no
     enable_database_connectivity=no
     enable_dbus=no
     enable_dconf=no
@@ -10505,16 +10504,6 @@ AC_SUBST(LIBTOMMATH_CFLAGS)
 AC_SUBST(LIBTOMMATH_LIBS)
 
 dnl ===================================================================
-dnl Check for system curl
-dnl ===================================================================
-if test "$enable_curl" = "yes"; then
-    libo_CHECK_SYSTEM_MODULE([curl],[CURL],[libcurl >= 7.68.0],enabled)
-    ENABLE_CURL=TRUE
-    AC_DEFINE(HAVE_FEATURE_CURL)
-fi
-AC_SUBST(ENABLE_CURL)
-
-dnl ===================================================================
 dnl Check for system boost
 dnl ===================================================================
 AC_MSG_CHECKING([which boost to use])
@@ -11015,10 +11004,6 @@ no)
     ;;
 *)
     AC_MSG_RESULT([yes])
-    # curl is already mandatory (almost) and checked elsewhere
-    if test "$enable_curl" = "no"; then
-        AC_MSG_ERROR(["--with-webdav conflicts with --disable-curl"])
-    fi
     WITH_WEBDAV=TRUE
     ;;
 esac

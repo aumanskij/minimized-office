@@ -292,13 +292,6 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,impress, \
 	wpftimpress \
 ))
 
-$(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,onlineupdate, \
-	$(if $(ENABLE_ONLINE_UPDATE), \
-		updatecheckui \
-		updchk \
-	) \
-))
-
 $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,gnome, \
 	$(if $(ENABLE_EVOAB2),evoab) \
 	$(if $(ENABLE_GIO),losessioninstall) \
@@ -480,7 +473,6 @@ $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,ooo, \
 	ucptdoc1 \
 	unordf \
 	unoxml \
-	updatefeed \
 	utl \
 	uui \
 	$(call gb_Helper_optional,SCRIPTING, \
@@ -1123,10 +1115,6 @@ $(eval $(call gb_Helper_register_packages_for_install,writer_brand,\
 	desktop_swriter_sh \
 ))
 endif # USING_X11=TRUE
-
-$(eval $(call gb_Helper_register_packages_for_install,onlineupdate,\
-	$(if $(ENABLE_ONLINE_UPDATE),$(if $(filter LINUX SOLARIS,$(OS)),setup_native_scripts)) \
-))
 
 ifneq ($(DISABLE_PYTHON),TRUE)
 $(eval $(call gb_Helper_register_packages_for_install,python, \
