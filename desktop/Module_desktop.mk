@@ -94,15 +94,6 @@ $(eval $(call gb_Module_add_targets,desktop,\
     WinResTarget_sweb \
     WinResTarget_swriter \
 ))
-
-else ifeq (,$(filter MACOSX ANDROID iOS HAIKU EMSCRIPTEN,$(OS)))
-
-ifeq (,$(filter FUZZERS,$(BUILD_TYPE)))
-$(eval $(call gb_Module_add_targets,desktop,\
-    Executable_oosplash \
-))
-endif
-
 endif # $(OS)
 
 ifneq (,$(filter Extension_test-active,$(MAKECMDGOALS)))
