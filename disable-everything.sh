@@ -143,7 +143,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--without-system-libwpg \
 	--without-system-libwps \
 	--without-system-libxml \
-	--without-system-libzmf \
 	--without-system-lpsolve \
 	--without-system-mariadb \
 	--without-system-mdds \

@@ -576,7 +576,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_draw_types.xcu,f
 	draw_ClarisWorks \
 	draw_PageMaker_Document \
 	draw_QXP_Document \
-	draw_ZMF_Document \
 	MWAW_Bitmap \
 	MWAW_Drawing \
 	StarOffice_Drawing \
@@ -598,7 +597,6 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_draw_filters.x
 	ClarisWorks_Draw \
 	PageMakerDocument \
 	QXPDocument \
-	ZMFDocument \
 	MWAW_Bitmap \
 	MWAW_Drawing \
 	StarOffice_Drawing \

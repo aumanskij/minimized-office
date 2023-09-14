@@ -3100,7 +3100,6 @@ if test "$enable_wasm_strip" = "yes"; then
     test_libpagemaker=no
     test_libqxp=no
     test_libvisio=no
-    test_libzmf=no
     test_webdav=no
     with_galleries=no
     with_webdav=no
@@ -9624,8 +9623,6 @@ libo_CHECK_SYSTEM_MODULE([libabw],[ABW],[libabw-0.1])
 libo_CHECK_SYSTEM_MODULE([libpagemaker],[PAGEMAKER],[libpagemaker-0.0])
 
 libo_CHECK_SYSTEM_MODULE([libqxp],[QXP],[libqxp-0.0])
-
-libo_CHECK_SYSTEM_MODULE([libzmf],[ZMF],[libzmf-0.0])
 
 libo_CHECK_SYSTEM_MODULE([libstaroffice],[STAROFFICE],[libstaroffice-0.0])
 libo_PKG_VERSION([STAROFFICE], [libstaroffice-0.0], [0.0.7])

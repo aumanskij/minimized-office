@@ -43,9 +43,6 @@ excludelist:
     writerperfect/source/draw/PageMakerImportFilter.hxx:
     # Needed for direct member access
     - DocumentHandlerForOdg.hxx
-    writerperfect/source/draw/ZMFImportFilter.hxx:
-    # Needed for direct member access
-    - DocumentHandlerForOdg.hxx
     writerperfect/source/draw/CMXImportFilter.hxx:
     # Needed for direct member access
     - DocumentHandlerForOdg.hxx
@@ -155,9 +152,6 @@ excludelist:
     writerperfect/source/draw/WPGImportFilter.cxx:
     # Wrapper header for external library
     - libwpg/libwpg.h
-    writerperfect/source/draw/ZMFImportFilter.cxx:
-    # Wrapper header for external library
-    - libzmf/libzmf.h
     writerperfect/source/impress/MWAWPresentationImportFilter.cxx:
     # Wrapper header for external library
     - libmwaw/libmwaw.hxx

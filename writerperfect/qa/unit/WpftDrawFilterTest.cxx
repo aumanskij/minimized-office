@@ -69,8 +69,6 @@ void WpftDrawFilterTest::test()
            u"/writerperfect/qa/unit/data/draw/libpagemaker/");
     doTest("org.libreoffice.comp.Draw.StarOfficeDrawImportFilter",
            u"/writerperfect/qa/unit/data/draw/libstaroffice/", aStarOfficeOptional);
-    doTest("org.libreoffice.comp.Draw.ZMFImportFilter",
-           u"/writerperfect/qa/unit/data/draw/libzmf/");
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION(WpftDrawFilterTest);

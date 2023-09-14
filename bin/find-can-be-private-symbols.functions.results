@@ -20121,8 +20121,6 @@ libreofficekit_hook_2
 libvisio::VisioDocument::isSupported(librevenge::RVNGInputStream*)
 libvisio::VisioDocument::parse(librevenge::RVNGInputStream*, librevenge::RVNGDrawingInterface*)
 libvisio::VisioDocument::parseStencils(librevenge::RVNGInputStream*, librevenge::RVNGDrawingInterface*)
-libzmf::ZMFDocument::isSupported(librevenge::RVNGInputStream*, libzmf::ZMFDocument::Type*, libzmf::ZMFDocument::Kind*)
-libzmf::ZMFDocument::parse(librevenge::RVNGInputStream*, librevenge::RVNGDrawingInterface*)
 lin_solve
 line_tok(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char)
 line_uniq(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, char)
