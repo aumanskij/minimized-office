@@ -107,12 +107,6 @@
 #include <comphelper/scopeguard.hxx>
 #include <authfld.hxx>
 #include <config_wasm_strip.h>
-#if !ENABLE_WASM_STRIP_EXTRA
-#include <officecfg/Office/Common.hxx>
-#include <officecfg/Office/Linguistic.hxx>
-#include <svl/visitem.hxx>
-#include <translatelangselect.hxx>
-#endif // ENABLE_WASM_STRIP_EXTRA
 #include <translatehelper.hxx>
 #include <IDocumentContentOperations.hxx>
 #include <IDocumentUndoRedo.hxx>
@@ -1977,31 +1971,6 @@ void SwTextShell::Execute(SfxRequest &rReq)
     break;
     case SID_FM_TRANSLATE:
     {
-#if !ENABLE_WASM_STRIP_EXTRA
-        const SfxPoolItem* pTargetLangStringItem = nullptr;
-        if (pArgs && SfxItemState::SET == pArgs->GetItemState(SID_ATTR_TARGETLANG_STR, false, &pTargetLangStringItem))
-        {
-            std::optional<OUString> oDeeplAPIUrl = officecfg::Office::Linguistic::Translation::Deepl::ApiURL::get();
-            std::optional<OUString> oDeeplKey = officecfg::Office::Linguistic::Translation::Deepl::AuthKey::get();
-            if (!oDeeplAPIUrl || oDeeplAPIUrl->isEmpty() || !oDeeplKey || oDeeplKey->isEmpty())
-            {
-                SAL_WARN("sw.ui", "SID_FM_TRANSLATE: API options are not set");
-                break;
-            }
-            const OString aAPIUrl = OUStringToOString(rtl::Concat2View(*oDeeplAPIUrl + "?tag_handling=html"), RTL_TEXTENCODING_UTF8).trim();
-            const OString aAuthKey = OUStringToOString(*oDeeplKey, RTL_TEXTENCODING_UTF8).trim();
-            OString aTargetLang = OUStringToOString(static_cast<const SfxStringItem*>(pTargetLangStringItem)->GetValue(), RTL_TEXTENCODING_UTF8);
-            SwTranslateHelper::TranslateAPIConfig aConfig({aAPIUrl, aAuthKey, aTargetLang});
-            SwTranslateHelper::TranslateDocument(rWrtSh, aConfig);
-        }
-        else
-        {
-            SwAbstractDialogFactory* pFact = SwAbstractDialogFactory::Create();
-            std::shared_ptr<AbstractSwTranslateLangSelectDlg> pAbstractDialog(pFact->CreateSwTranslateLangSelectDlg(GetView().GetFrameWeld(), rWrtSh));
-            std::shared_ptr<weld::DialogController> pDialogController(pAbstractDialog->getDialogController());
-            weld::DialogController::runAsync(pDialogController, [] (sal_Int32 /*nResult*/) { });
-        }
-#endif // ENABLE_WASM_STRIP_EXTRA
     }
     break;
     case SID_SPELLCHECK_IGNORE:
@@ -2521,20 +2490,6 @@ void SwTextShell::GetState( SfxItemSet &rSet )
 
             case SID_FM_TRANSLATE:
                 {
-#if !ENABLE_WASM_STRIP_EXTRA
-                    if (!officecfg::Office::Common::Misc::ExperimentalMode::get()
-                        && !comphelper::LibreOfficeKit::isActive())
-                    {
-                        rSet.Put(SfxVisibilityItem(nWhich, false));
-                        break;
-                    }
-                    std::optional<OUString> oDeeplAPIUrl = officecfg::Office::Linguistic::Translation::Deepl::ApiURL::get();
-                    std::optional<OUString> oDeeplKey = officecfg::Office::Linguistic::Translation::Deepl::AuthKey::get();
-                    if (!oDeeplAPIUrl || oDeeplAPIUrl->isEmpty() || !oDeeplKey || oDeeplKey->isEmpty())
-                    {
-                        rSet.DisableItem(nWhich);
-                    }
-#endif
                 }
                 break;
 

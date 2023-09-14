@@ -34,8 +34,4 @@ struct SW_DLLPUBLIC TranslateAPIConfig final
 };
 SW_DLLPUBLIC OString ExportPaMToHTML(SwPaM* pCursor);
 SW_DLLPUBLIC void PasteHTMLToPaM(SwWrtShell& rWrtSh, SwPaM* pCursor, const OString& rData);
-SW_DLLPUBLIC void TranslateDocument(SwWrtShell& rWrtSh, const TranslateAPIConfig& rConfig);
-SW_DLLPUBLIC void TranslateDocumentCancellable(SwWrtShell& rWrtSh,
-                                               const TranslateAPIConfig& rConfig,
-                                               bool& rCancelTranslation);
 }

@@ -910,15 +910,6 @@ sal_uInt16 AbstractMailMergeWizard_Impl::GetRestartPage() const
     return m_xDlg->GetRestartPage();
 }
 
-std::optional<SwLanguageListItem> AbstractSwTranslateLangSelectDlg_Impl::GetSelectedLanguage()
-{
-#if !ENABLE_WASM_STRIP_EXTRA
-    return SwTranslateLangSelectDlg::GetSelectedLanguage();
-#else
-    return {};
-#endif
-}
-
 VclPtr<AbstractSwInsertAbstractDlg> SwAbstractDialogFactory_Impl::CreateSwInsertAbstractDlg(weld::Window* pParent)
 {
     return VclPtr<AbstractSwInsertAbstractDlg_Impl>::Create(std::make_unique<SwInsertAbstractDlg>(pParent));
@@ -976,17 +967,6 @@ SwAbstractDialogFactory_Impl::CreateSwContentControlListItemDlg(weld::Window* pP
 std::shared_ptr<AbstractSwBreakDlg> SwAbstractDialogFactory_Impl::CreateSwBreakDlg(weld::Window* pParent, SwWrtShell &rSh)
 {
     return std::make_shared<AbstractSwBreakDlg_Impl>(std::make_unique<SwBreakDlg>(pParent, rSh));
-}
-
-std::shared_ptr<AbstractSwTranslateLangSelectDlg> SwAbstractDialogFactory_Impl::CreateSwTranslateLangSelectDlg(weld::Window* pParent, SwWrtShell &rSh)
-{
-#if !ENABLE_WASM_STRIP_EXTRA
-    return std::make_shared<AbstractSwTranslateLangSelectDlg_Impl>(std::make_unique<SwTranslateLangSelectDlg>(pParent, rSh));
-#else
-    (void) pParent;
-    (void) rSh;
-    return nullptr;
-#endif
 }
 
 VclPtr<VclAbstractDialog> SwAbstractDialogFactory_Impl::CreateSwChangeDBDlg(SwView& rVw)
