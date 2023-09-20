@@ -53,9 +53,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	animations \
     ) \
 	avmedia \
-	$(if $(ENABLE_WASM_STRIP_CALC),, \
-	basctl \
-	) \
 	basegfx \
 	basic \
 	bean \
