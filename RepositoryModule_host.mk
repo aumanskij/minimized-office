@@ -49,11 +49,9 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 endif
 
 $(eval $(call gb_Module_add_moduledirs,libreoffice,\
-	android \
     $(if $(ENABLE_WASM_STRIP_BASIC_DRAW_MATH_IMPRESS),, \
 	animations \
     ) \
-	apple_remote \
 	avmedia \
 	$(if $(ENABLE_WASM_STRIP_CALC),, \
 	basctl \
@@ -105,7 +103,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	libreofficekit \
 	lingucomponent \
 	linguistic \
-	lotuswordpro \
 	$(call gb_Helper_optional,DESKTOP,l10ntools) \
 	$(call gb_Helper_optional,NLPSOLVER,nlpsolver) \
 	o3tl \
