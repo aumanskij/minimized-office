@@ -177,7 +177,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	unoxml \
 	ure \
 	uui \
-	vbahelper \
 	vcl \
 	wizards \
 	writerfilter \
