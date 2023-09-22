@@ -35,12 +35,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 ))
 endif
 
-ifneq ($(ENABLE_WASM_STRIP_DBACCESS),TRUE)
-$(eval $(call gb_Module_add_moduledirs,libreoffice,\
-	dbaccess \
-))
-endif
-
 ifneq ($(ENABLE_WASM_STRIP_ACCESSIBILITY),TRUE)
 $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	accessibility \
@@ -118,7 +112,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	registry \
 	remotebridges \
 	reportbuilder \
-	$(call gb_Helper_optional,DBCONNECTIVITY,reportdesign) \
 	ridljar \
 	sal \
 	salhelper \
