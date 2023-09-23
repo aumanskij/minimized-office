@@ -78,7 +78,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	framework \
     $(call gb_Helper_optionals_or,HELPTOOLS XMLHELP,helpcompiler) \
 	$(call gb_Helper_optional,HELP,helpcontent2) \
-	hwpfilter \
 	i18nlangtag \
 	i18npool \
 	i18nutil \
