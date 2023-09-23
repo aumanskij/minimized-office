@@ -164,7 +164,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	ure \
 	uui \
 	vcl \
-	wizards \
 	writerfilter \
 	writerperfect \
 	xmerge \
