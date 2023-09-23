@@ -49,7 +49,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	avmedia \
 	basegfx \
 	basic \
-	bean \
 	binaryurp \
 	bridges \
 	cli_ure \
@@ -86,10 +85,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	idl \
 	instsetoo_native \
 	io \
-	javaunohelper \
-	jurt \
-	jvmaccess \
-	jvmfwk \
 	$(call gb_Helper_optional,LIBRELOGO,librelogo) \
 	libreofficekit \
 	lingucomponent \
@@ -112,7 +107,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	registry \
 	remotebridges \
 	reportbuilder \
-	ridljar \
 	sal \
 	salhelper \
 	sax \
