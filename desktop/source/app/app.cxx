@@ -980,39 +980,6 @@ struct RefClearGuard
     @param  bEmergencySave
             differs between EMERGENCY_SAVE and RECOVERY
 */
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-bool impl_callRecoveryUI(bool bEmergencySave     ,
-                         bool bExistsRecoveryData)
-{
-    constexpr OUStringLiteral COMMAND_EMERGENCYSAVE = u"vnd.sun.star.autorecovery:/doEmergencySave";
-    constexpr OUStringLiteral COMMAND_RECOVERY = u"vnd.sun.star.autorecovery:/doAutoRecovery";
-
-    css::uno::Reference< css::uno::XComponentContext > xContext = ::comphelper::getProcessComponentContext();
-
-    g_xRecoveryUI.set(
-        xContext->getServiceManager()->createInstanceWithContext("com.sun.star.comp.svx.RecoveryUI", xContext),
-        css::uno::UNO_QUERY_THROW);
-    RefClearGuard<Reference< css::frame::XSynchronousDispatch >> refClearGuard(g_xRecoveryUI);
-
-    Reference< css::util::XURLTransformer > xURLParser =
-        css::util::URLTransformer::create(xContext);
-
-    css::util::URL aURL;
-    if (bEmergencySave)
-        aURL.Complete = COMMAND_EMERGENCYSAVE;
-    else if (bExistsRecoveryData)
-        aURL.Complete = COMMAND_RECOVERY;
-    else
-        return false;
-
-    xURLParser->parseStrict(aURL);
-
-    css::uno::Any aRet = g_xRecoveryUI->dispatchWithReturnValue(aURL, css::uno::Sequence< css::beans::PropertyValue >());
-    bool bRet = false;
-    aRet >>= bRet;
-    return bRet;
-}
-#endif
 
 bool impl_bringToFrontRecoveryUI()
 {
@@ -1161,11 +1128,6 @@ void Desktop::Exception(ExceptionCategory nCategory)
         // Save all open documents so they will be reopened
         // the next time the application is started
         // returns true if at least one document could be saved...
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-        bRestart = impl_callRecoveryUI(
-                        true , // force emergency save
-                        false);
-#endif
     }
 
     FlushConfiguration();
@@ -1985,35 +1947,6 @@ void Desktop::OpenClients()
     else
     {
         bool bExistsRecoveryData = false;
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-        bool bCrashed            = false;
-        bool bExistsSessionData  = false;
-        bool const bDisableRecovery
-            = getenv("OOO_DISABLE_RECOVERY") != nullptr
-              || IsOnSystemEventLoop()
-              || !officecfg::Office::Recovery::RecoveryInfo::Enabled::get();
-
-        impl_checkRecoveryState(bCrashed, bExistsRecoveryData, bExistsSessionData);
-
-        if ( !bDisableRecovery &&
-            (
-                bExistsRecoveryData || // => crash with files    => recovery
-                bCrashed               // => crash without files => error report
-            )
-           )
-        {
-            try
-            {
-                impl_callRecoveryUI(
-                    false          , // false => force recovery instead of emergency save
-                    bExistsRecoveryData);
-            }
-            catch(const css::uno::Exception&)
-            {
-                TOOLS_WARN_EXCEPTION( "desktop.app", "Error during recovery");
-            }
-        }
-#endif
 
         Reference< XSessionManagerListener2 > xSessionListener;
         try
