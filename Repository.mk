@@ -912,12 +912,6 @@ $(eval $(call gb_Helper_register_packages_for_install,sdk,\
 	) \
 ))
 
-ifneq ($(ENABLE_WASM_STRIP_PINGUSER),TRUE)
-$(eval $(call gb_Helper_register_packages_for_install,ooo,\
-	tipoftheday_images \
-))
-endif
-
 ifneq ($(ENABLE_WASM_STRIP_CANVAS),TRUE)
 $(eval $(call gb_Helper_register_packages_for_install,ooo,\
 	$(if $(ENABLE_OPENGL_CANVAS),canvas_opengl_shader) \
