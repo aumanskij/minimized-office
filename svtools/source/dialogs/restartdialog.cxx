@@ -59,9 +59,6 @@ public:
         case svtools::RESTART_REASON_SKIA:
             reason_ = m_xBuilder->weld_widget("reason_skia");
             break;
-        case svtools::RESTART_REASON_OPENCL:
-            reason_ = m_xBuilder->weld_widget("reason_opencl");
-            break;
         case svtools::RESTART_REASON_THREADING:
             reason_ = m_xBuilder->weld_widget("reason_threading");
             break;

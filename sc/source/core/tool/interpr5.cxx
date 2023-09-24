@@ -968,20 +968,6 @@ void ScInterpreter::ScMatInv()
     SCSIZE nC, nR;
     pMat->GetDimensions(nC, nR);
 
-    if (ScCalcConfig::isOpenCLEnabled())
-    {
-        sc::FormulaGroupInterpreter *pInterpreter = sc::FormulaGroupInterpreter::getStatic();
-        if (pInterpreter != nullptr)
-        {
-            ScMatrixRef xResMat = pInterpreter->inverseMatrix(*pMat);
-            if (xResMat)
-            {
-                PushMatrix(xResMat);
-                return;
-            }
-        }
-    }
-
     if ( nC != nR || nC == 0 )
         PushIllegalArgument();
     else if (!ScMatrix::IsSizeAllocatable( nC, nR))

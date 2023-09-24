@@ -109,8 +109,6 @@ public:
             const ScAddress& rCellPos, const ScAddress& rRefPos,
             const formula::FormulaToken& rToken );
 
-        void addGroupSizeThresholdMessage( const ScFormulaCell& rCell );
-
         /**
          * Call this when the group calculation has finished successfully.
          */
@@ -162,11 +160,6 @@ public:
         void addRefMessage(
             const ScAddress& /*rCellPos*/, const ScAddress& /*rRefPos*/,
             const formula::FormulaToken& /*rToken*/ )
-        {
-            (void) this; /* loplugin:staticmethods */
-        }
-
-        void addGroupSizeThresholdMessage( const ScFormulaCell& /*rCell*/ )
         {
             (void) this; /* loplugin:staticmethods */
         }

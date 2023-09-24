@@ -159,11 +159,6 @@ constexpr OUStringLiteral CFGPATH_FORMULA = u"Office.Calc/Formula";
 #define SCFORMULAOPT_EMPTY_OUSTRING_AS_ZERO 7
 #define SCFORMULAOPT_OOXML_RECALC         8
 #define SCFORMULAOPT_ODF_RECALC           9
-#define SCFORMULAOPT_OPENCL_AUTOSELECT   10
-#define SCFORMULAOPT_OPENCL_DEVICE       11
-#define SCFORMULAOPT_OPENCL_SUBSET_ONLY  12
-#define SCFORMULAOPT_OPENCL_MIN_SIZE     13
-#define SCFORMULAOPT_OPENCL_SUBSET_OPS   14
 
 Sequence<OUString> ScFormulaCfg::GetPropertyNames()
 {
@@ -176,12 +171,7 @@ Sequence<OUString> ScFormulaCfg::GetPropertyNames()
             "Syntax/StringConversion",              // SCFORMULAOPT_STRING_CONVERSION
             "Syntax/EmptyStringAsZero",             // SCFORMULAOPT_EMPTY_OUSTRING_AS_ZERO
             "Load/OOXMLRecalcMode",                 // SCFORMULAOPT_OOXML_RECALC
-            "Load/ODFRecalcMode",                   // SCFORMULAOPT_ODF_RECALC
-            "Calculation/OpenCLAutoSelect",         // SCFORMULAOPT_OPENCL_AUTOSELECT
-            "Calculation/OpenCLDevice",             // SCFORMULAOPT_OPENCL_DEVICE
-            "Calculation/OpenCLSubsetOnly",         // SCFORMULAOPT_OPENCL_SUBSET_ONLY
-            "Calculation/OpenCLMinimumDataSize",    // SCFORMULAOPT_OPENCL_MIN_SIZE
-            "Calculation/OpenCLSubsetOpCodes"};     // SCFORMULAOPT_OPENCL_SUBSET_OPS
+            "Load/ODFRecalcMode"};                  // SCFORMULAOPT_ODF_RECALC
 }
 
 ScFormulaCfg::PropsToIds ScFormulaCfg::GetPropNamesToId()
@@ -197,12 +187,7 @@ ScFormulaCfg::PropsToIds ScFormulaCfg::GetPropNamesToId()
         SCFORMULAOPT_STRING_CONVERSION,
         SCFORMULAOPT_EMPTY_OUSTRING_AS_ZERO,
         SCFORMULAOPT_OOXML_RECALC,
-        SCFORMULAOPT_ODF_RECALC,
-        SCFORMULAOPT_OPENCL_AUTOSELECT,
-        SCFORMULAOPT_OPENCL_DEVICE,
-        SCFORMULAOPT_OPENCL_SUBSET_ONLY,
-        SCFORMULAOPT_OPENCL_MIN_SIZE,
-        SCFORMULAOPT_OPENCL_SUBSET_OPS,
+        SCFORMULAOPT_ODF_RECALC
     };
     OSL_ENSURE( SAL_N_ELEMENTS(aVals) == aPropNames.getLength(), "Properties and ids are out of Sync");
     PropsToIds aPropIdMap;
@@ -419,41 +404,6 @@ void ScFormulaCfg::UpdateFromProperties( const Sequence<OUString>& aNames )
                 SetODFRecalcOptions(eOpt);
             }
             break;
-            case SCFORMULAOPT_OPENCL_AUTOSELECT:
-            {
-                bool bVal = GetCalcConfig().mbOpenCLAutoSelect;
-                pValues[nProp] >>= bVal;
-                GetCalcConfig().mbOpenCLAutoSelect = bVal;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_DEVICE:
-            {
-                OUString aOpenCLDevice = GetCalcConfig().maOpenCLDevice;
-                pValues[nProp] >>= aOpenCLDevice;
-                GetCalcConfig().maOpenCLDevice = aOpenCLDevice;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_SUBSET_ONLY:
-            {
-                bool bVal = GetCalcConfig().mbOpenCLSubsetOnly;
-                pValues[nProp] >>= bVal;
-                GetCalcConfig().mbOpenCLSubsetOnly = bVal;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_MIN_SIZE:
-            {
-                sal_Int32 nVal = GetCalcConfig().mnOpenCLMinimumFormulaGroupSize;
-                pValues[nProp] >>= nVal;
-                GetCalcConfig().mnOpenCLMinimumFormulaGroupSize = nVal;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_SUBSET_OPS:
-            {
-                OUString sVal = ScOpCodeSetToSymbolicString(GetCalcConfig().mpOpenCLSubsetOpCodes);
-                pValues[nProp] >>= sVal;
-                GetCalcConfig().mpOpenCLSubsetOpCodes = ScStringToOpCodeSet(sVal);
-            }
-            break;
             }
         }
     }
@@ -467,8 +417,6 @@ void ScFormulaCfg::ImplCommit()
 
     Sequence<Any> aOldValues = GetProperties(aNames);
     Any* pOldValues = aOldValues.getArray();
-
-    bool bSetOpenCL = false;
 
     for (int nProp = 0; nProp < aNames.getLength(); ++nProp)
     {
@@ -595,47 +543,8 @@ void ScFormulaCfg::ImplCommit()
                 pValues[nProp] <<= nVal;
             }
             break;
-            case SCFORMULAOPT_OPENCL_AUTOSELECT:
-            {
-                bool bVal = GetCalcConfig().mbOpenCLAutoSelect;
-                pValues[nProp] <<= bVal;
-                bSetOpenCL = true;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_DEVICE:
-            {
-                OUString aOpenCLDevice = GetCalcConfig().maOpenCLDevice;
-                pValues[nProp] <<= aOpenCLDevice;
-                bSetOpenCL = true;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_SUBSET_ONLY:
-            {
-                bool bVal = GetCalcConfig().mbOpenCLSubsetOnly;
-                pValues[nProp] <<= bVal;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_MIN_SIZE:
-            {
-                sal_Int32 nVal = GetCalcConfig().mnOpenCLMinimumFormulaGroupSize;
-                pValues[nProp] <<= nVal;
-            }
-            break;
-            case SCFORMULAOPT_OPENCL_SUBSET_OPS:
-            {
-                OUString sVal = ScOpCodeSetToSymbolicString(GetCalcConfig().mpOpenCLSubsetOpCodes);
-                pValues[nProp] <<= sVal;
-            }
-            break;
         }
     }
-#if !HAVE_FEATURE_OPENCL
-    (void) bSetOpenCL;
-#else
-    if(bSetOpenCL)
-        sc::FormulaGroupInterpreter::switchOpenCLDevice(
-                GetCalcConfig().maOpenCLDevice, GetCalcConfig().mbOpenCLAutoSelect);
-#endif
     PutProperties(aNames, aValues);
 }
 

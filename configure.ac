@@ -2043,11 +2043,6 @@ AC_ARG_ENABLE(ldap,
         [Disable LDAP support.]),
 ,enable_ldap=yes)
 
-AC_ARG_ENABLE(opencl,
-    AS_HELP_STRING([--disable-opencl],
-        [Disable OpenCL support.]),
-,enable_opencl=yes)
-
 libo_FUZZ_ARG_ENABLE(librelogo,
     AS_HELP_STRING([--disable-librelogo],
         [Do not build LibreLogo.]),
@@ -3083,7 +3078,6 @@ if test "$enable_wasm_strip" = "yes"; then
     enable_nss=no
     enable_odk=no
     enable_online_update=no
-    enable_opencl=no
     enable_pdfimport=no
     enable_randr=no
     enable_report_builder=no
@@ -5752,7 +5746,6 @@ if test "$cross_compiling" = "yes"; then
         --disable-mariadb-sdbc \
         --disable-nss \
         --disable-online-update \
-        --disable-opencl \
         --disable-openssl \
         --disable-pdfimport \
         --disable-postgresql-sdbc \
@@ -12038,17 +12031,6 @@ AC_SUBST(ENABLE_OPENGL_TRANSITIONS)
 AC_SUBST(ENABLE_OPENGL_CANVAS)
 
 dnl =================================================
-dnl Check whether to build with OpenCL support.
-dnl =================================================
-
-if test $_os != iOS -a $_os != Android -a "$ENABLE_FUZZERS" != "TRUE" -a "$enable_opencl" = "yes"; then
-    # OPENCL in BUILD_TYPE and HAVE_FEATURE_OPENCL tell that OpenCL is potentially available on the
-    # platform (optional at run-time, used through clew).
-    BUILD_TYPE="$BUILD_TYPE OPENCL"
-    AC_DEFINE(HAVE_FEATURE_OPENCL)
-fi
-
-dnl =================================================
 dnl Check whether to build with dconf support.
 dnl =================================================
 
@@ -15026,7 +15008,6 @@ AC_CONFIG_HEADERS([config_host/config_cxxabi.h])
 AC_CONFIG_HEADERS([config_host/config_dbus.h])
 AC_CONFIG_HEADERS([config_host/config_features.h])
 AC_CONFIG_HEADERS([config_host/config_feature_desktop.h])
-AC_CONFIG_HEADERS([config_host/config_feature_opencl.h])
 AC_CONFIG_HEADERS([config_host/config_firebird.h])
 AC_CONFIG_HEADERS([config_host/config_folders.h])
 AC_CONFIG_HEADERS([config_host/config_fonts.h])

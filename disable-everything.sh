@@ -52,7 +52,6 @@ export CXX=/usr/lib/ccache/bin/g++
 	--disable-mariadb-sdbc \
 	--disable-mergelibs \
 	--disable-odk \
-	--disable-opencl \
 	--disable-option-checking \
 	--disable-pdfimport \
 	--disable-pdfium \

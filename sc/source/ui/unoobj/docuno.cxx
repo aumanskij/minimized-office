@@ -17,7 +17,6 @@
  *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
  */
 
-#include <config_feature_opencl.h>
 
 #include <scitems.hxx>
 
@@ -77,9 +76,6 @@
 #include <comphelper/servicehelper.hxx>
 #include <comphelper/string.hxx>
 #include <cppuhelper/supportsservice.hxx>
-#if HAVE_FEATURE_OPENCL
-#include <opencl/platforminfo.hxx>
-#endif
 #include <sfx2/lokhelper.hxx>
 #include <sfx2/lokcomponenthelpers.hxx>
 #include <sfx2/LokControlHandler.hxx>
@@ -1334,7 +1330,6 @@ uno::Any SAL_CALL ScModelObj::queryInterface( const uno::Type& rType )
                 static_cast< lang::XMultiServiceFactory *>(this),
                 static_cast< lang::XServiceInfo *>(this),
                 static_cast< util::XChangesNotifier *>(this),
-                static_cast< sheet::opencl::XOpenCLSelection *>(this),
                 static_cast< chart2::XDataProviderAccess *>(this));
     if ( aReturn.hasValue() )
         return aReturn;
@@ -1401,7 +1396,6 @@ uno::Sequence<uno::Type> SAL_CALL ScModelObj::getTypes()
                 cppu::UnoType<lang::XMultiServiceFactory>::get(),
                 cppu::UnoType<lang::XServiceInfo>::get(),
                 cppu::UnoType<util::XChangesNotifier>::get(),
-                cppu::UnoType<sheet::opencl::XOpenCLSelection>::get(),
             } );
     }();
     return aTypes;
@@ -3468,177 +3462,6 @@ void ScModelObj::HandleCalculateEvents()
         }
     }
     rDoc.ResetCalcNotifications();
-}
-
-// XOpenCLSelection
-
-sal_Bool ScModelObj::isOpenCLEnabled()
-{
-    return ScCalcConfig::isOpenCLEnabled();
-}
-
-void ScModelObj::enableOpenCL(sal_Bool bEnable)
-{
-    if (ScCalcConfig::isOpenCLEnabled() == static_cast<bool>(bEnable))
-        return;
-    if (ScCalcConfig::getForceCalculationType() != ForceCalculationNone)
-        return;
-
-    std::shared_ptr<comphelper::ConfigurationChanges> batch(comphelper::ConfigurationChanges::create());
-    officecfg::Office::Common::Misc::UseOpenCL::set(bEnable, batch);
-    batch->commit();
-
-    ScCalcConfig aConfig = ScInterpreter::GetGlobalConfig();
-    if (bEnable)
-        aConfig.setOpenCLConfigToDefault();
-    ScInterpreter::SetGlobalConfig(aConfig);
-
-#if HAVE_FEATURE_OPENCL
-    sc::FormulaGroupInterpreter::switchOpenCLDevice(u"", true);
-#endif
-
-    ScDocument* pDoc = GetDocument();
-    pDoc->CheckVectorizationState();
-
-}
-
-void ScModelObj::enableAutomaticDeviceSelection(sal_Bool bForce)
-{
-    ScCalcConfig aConfig = ScInterpreter::GetGlobalConfig();
-    aConfig.mbOpenCLAutoSelect = true;
-    ScInterpreter::SetGlobalConfig(aConfig);
-    ScFormulaOptions aOptions = SC_MOD()->GetFormulaOptions();
-    aOptions.SetCalcConfig(aConfig);
-    SC_MOD()->SetFormulaOptions(aOptions);
-#if !HAVE_FEATURE_OPENCL
-    (void) bForce;
-#else
-    sc::FormulaGroupInterpreter::switchOpenCLDevice(u"", true, bForce);
-#endif
-}
-
-void ScModelObj::disableAutomaticDeviceSelection()
-{
-    ScCalcConfig aConfig = ScInterpreter::GetGlobalConfig();
-    aConfig.mbOpenCLAutoSelect = false;
-    ScInterpreter::SetGlobalConfig(aConfig);
-    ScFormulaOptions aOptions = SC_MOD()->GetFormulaOptions();
-    aOptions.SetCalcConfig(aConfig);
-    SC_MOD()->SetFormulaOptions(aOptions);
-}
-
-void ScModelObj::selectOpenCLDevice( sal_Int32 nPlatform, sal_Int32 nDevice )
-{
-    if(nPlatform < 0 || nDevice < 0)
-        throw uno::RuntimeException();
-
-#if !HAVE_FEATURE_OPENCL
-    throw uno::RuntimeException();
-#else
-    std::vector<OpenCLPlatformInfo> aPlatformInfo;
-    sc::FormulaGroupInterpreter::fillOpenCLInfo(aPlatformInfo);
-    if(o3tl::make_unsigned(nPlatform) >= aPlatformInfo.size())
-        throw uno::RuntimeException();
-
-    if(o3tl::make_unsigned(nDevice) >= aPlatformInfo[nPlatform].maDevices.size())
-        throw uno::RuntimeException();
-
-    OUString aDeviceString = aPlatformInfo[nPlatform].maVendor + " " + aPlatformInfo[nPlatform].maDevices[nDevice].maName;
-    sc::FormulaGroupInterpreter::switchOpenCLDevice(aDeviceString, false);
-#endif
-}
-
-sal_Int32 ScModelObj::getPlatformID()
-{
-#if !HAVE_FEATURE_OPENCL
-    return -1;
-#else
-    sal_Int32 nPlatformId;
-    sal_Int32 nDeviceId;
-    sc::FormulaGroupInterpreter::getOpenCLDeviceInfo(nDeviceId, nPlatformId);
-    return nPlatformId;
-#endif
-}
-
-sal_Int32 ScModelObj::getDeviceID()
-{
-#if !HAVE_FEATURE_OPENCL
-    return -1;
-#else
-    sal_Int32 nPlatformId;
-    sal_Int32 nDeviceId;
-    sc::FormulaGroupInterpreter::getOpenCLDeviceInfo(nDeviceId, nPlatformId);
-    return nDeviceId;
-#endif
-}
-
-uno::Sequence< sheet::opencl::OpenCLPlatform > ScModelObj::getOpenCLPlatforms()
-{
-#if !HAVE_FEATURE_OPENCL
-    return uno::Sequence<sheet::opencl::OpenCLPlatform>();
-#else
-    std::vector<OpenCLPlatformInfo> aPlatformInfo;
-    sc::FormulaGroupInterpreter::fillOpenCLInfo(aPlatformInfo);
-
-    uno::Sequence<sheet::opencl::OpenCLPlatform> aRet(aPlatformInfo.size());
-    auto aRetRange = asNonConstRange(aRet);
-    for(size_t i = 0; i < aPlatformInfo.size(); ++i)
-    {
-        aRetRange[i].Name = aPlatformInfo[i].maName;
-        aRetRange[i].Vendor = aPlatformInfo[i].maVendor;
-
-        aRetRange[i].Devices.realloc(aPlatformInfo[i].maDevices.size());
-        auto pDevices = aRetRange[i].Devices.getArray();
-        for(size_t j = 0; j < aPlatformInfo[i].maDevices.size(); ++j)
-        {
-            const OpenCLDeviceInfo& rDevice = aPlatformInfo[i].maDevices[j];
-            pDevices[j].Name = rDevice.maName;
-            pDevices[j].Vendor = rDevice.maVendor;
-            pDevices[j].Driver = rDevice.maDriver;
-        }
-    }
-
-    return aRet;
-#endif
-}
-
-namespace {
-
-/// @throws css::uno::RuntimeException
-void setOpcodeSubsetTest(bool bFlag)
-{
-    std::shared_ptr<comphelper::ConfigurationChanges> batch(comphelper::ConfigurationChanges::create());
-    officecfg::Office::Calc::Formula::Calculation::OpenCLSubsetOnly::set(bFlag, batch);
-    batch->commit();
-}
-
-}
-
-void ScModelObj::enableOpcodeSubsetTest()
-{
-    setOpcodeSubsetTest(true);
-}
-
-void ScModelObj::disableOpcodeSubsetTest()
-{
-    setOpcodeSubsetTest(false);
-}
-
-sal_Bool ScModelObj::isOpcodeSubsetTested()
-{
-    return officecfg::Office::Calc::Formula::Calculation::OpenCLSubsetOnly::get();
-}
-
-void ScModelObj::setFormulaCellNumberLimit( sal_Int32 number )
-{
-    std::shared_ptr<comphelper::ConfigurationChanges> batch(comphelper::ConfigurationChanges::create());
-    officecfg::Office::Calc::Formula::Calculation::OpenCLMinimumDataSize::set(number, batch);
-    batch->commit();
-}
-
-sal_Int32 ScModelObj::getFormulaCellNumberLimit()
-{
-    return officecfg::Office::Calc::Formula::Calculation::OpenCLMinimumDataSize::get();
 }
 
 ScDrawPagesObj::ScDrawPagesObj(ScDocShell* pDocSh) :

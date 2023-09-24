@@ -55,7 +55,6 @@ struct SC_DLLPUBLIC ScCalcConfig
     bool mbEmptyStringAsZero : 1;
     bool mbHasStringRefSyntax : 1;
 
-    static bool isOpenCLEnabled();
     static bool isThreadingEnabled();
     static ForceCalculationType getForceCalculationType();
 

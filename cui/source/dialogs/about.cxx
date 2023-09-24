@@ -45,10 +45,6 @@
 #include <com/sun/star/datatransfer/clipboard/SystemClipboard.hpp>
 #include <vcl/unohelp2.hxx>
 
-#include <config_feature_opencl.h>
-#if HAVE_FEATURE_OPENCL
-#include <opencl/openclwrapper.hxx>
-#endif
 #include <officecfg/Office/Calc.hxx>
 #include <officecfg/Office/Common.hxx>
 
@@ -216,10 +212,6 @@ OUString AboutDialog::GetMiscString() {
 
   OUString aCalcMode; // Calc calculation mode
 
-#if HAVE_FEATURE_OPENCL
-  if (openclwrapper::GPUEnv::isOpenCLEnabled())
-    aCalcMode += " CL";
-#endif
 
   static const bool bThreadingProhibited =
       std::getenv("SC_NO_THREADED_CALCULATION");
