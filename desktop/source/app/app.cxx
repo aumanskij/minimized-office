@@ -1179,10 +1179,6 @@ void Desktop::Exception(ExceptionCategory nCategory)
             osl_removeSignalHandler( pSignalHandler );
 
         restartOnMac(false);
-#if !ENABLE_WASM_STRIP_SPLASH
-        if ( m_rSplashScreen.is() )
-            m_rSplashScreen->reset();
-#endif
 
         _exit( EXITHELPER_CRASH_WITH_RESTART );
     }
@@ -1283,9 +1279,6 @@ int Desktop::Main()
     Translate::SetReadStringHook(ReplaceStringHookProc);
 
     // Startup screen
-#if !ENABLE_WASM_STRIP_SPLASH
-    OpenSplashScreen();
-#endif
 
     SetSplashScreenProgress(10);
 
@@ -1696,10 +1689,6 @@ int Desktop::doShutdown()
     if ( bRR )
     {
         restartOnMac(true);
-#if !ENABLE_WASM_STRIP_SPLASH
-        if ( m_rSplashScreen.is() )
-            m_rSplashScreen->reset();
-#endif
 
         return EXITHELPER_NORMAL_RESTART;
     }
@@ -2383,92 +2372,19 @@ void Desktop::HandleAppEvent( const ApplicationEvent& rAppEvent )
     }
 }
 
-#if !ENABLE_WASM_STRIP_SPLASH
-void Desktop::OpenSplashScreen()
-{
-    const CommandLineArgs &rCmdLine = GetCommandLineArgs();
-    // Show intro only if this is normal start (e.g. no server, no quickstart, no printing )
-    if ( !(!rCmdLine.IsInvisible() &&
-         !rCmdLine.IsHeadless() &&
-         !rCmdLine.IsQuickstart() &&
-         !rCmdLine.IsMinimized() &&
-         !rCmdLine.IsNoLogo() &&
-         !rCmdLine.IsTerminateAfterInit() &&
-         rCmdLine.GetPrintList().empty() &&
-         rCmdLine.GetPrintToList().empty() &&
-         rCmdLine.GetConversionList().empty()) )
-        return;
-
-    // Determine application name from command line parameters
-    OUString aAppName;
-    if ( rCmdLine.IsWriter() )
-        aAppName = "writer";
-    else if ( rCmdLine.IsCalc() )
-        aAppName = "calc";
-    else if ( rCmdLine.IsDraw() )
-        aAppName = "draw";
-    else if ( rCmdLine.IsImpress() )
-        aAppName = "impress";
-    else if ( rCmdLine.IsBase() )
-        aAppName = "base";
-    else if ( rCmdLine.IsGlobal() )
-        aAppName = "global";
-    else if ( rCmdLine.IsMath() )
-        aAppName = "math";
-    else if ( rCmdLine.IsWeb() )
-        aAppName = "web";
-
-    // Which splash to use
-    OUString aSplashService( "com.sun.star.office.SplashScreen" );
-    if ( rCmdLine.HasSplashPipe() )
-        aSplashService = "com.sun.star.office.PipeSplashScreen";
-
-    Sequence< Any > aSeq{ Any(true) /* bVisible */, Any(aAppName) };
-    css::uno::Reference< css::uno::XComponentContext > xContext = ::comphelper::getProcessComponentContext();
-    m_rSplashScreen.set(
-        xContext->getServiceManager()->createInstanceWithArgumentsAndContext(aSplashService, aSeq, xContext),
-        UNO_QUERY);
-
-    if(m_rSplashScreen.is())
-            m_rSplashScreen->start("SplashScreen", 100);
-
-}
-#endif
 
 void Desktop::SetSplashScreenProgress(sal_Int32 iProgress)
 {
-#if ENABLE_WASM_STRIP_SPLASH
     (void) iProgress;
-#else
-    if(m_rSplashScreen.is())
-    {
-        m_rSplashScreen->setValue(iProgress);
-    }
-#endif
 }
 
 void Desktop::SetSplashScreenText( const OUString& rText )
 {
-#if ENABLE_WASM_STRIP_SPLASH
     (void) rText;
-#else
-    if( m_rSplashScreen.is() )
-    {
-        m_rSplashScreen->setText( rText );
-    }
-#endif
 }
 
 void Desktop::CloseSplashScreen()
 {
-#if !ENABLE_WASM_STRIP_SPLASH
-    if(m_rSplashScreen.is())
-    {
-        SolarMutexGuard ensureSolarMutex;
-        m_rSplashScreen->end();
-        m_rSplashScreen = nullptr;
-    }
-#endif
 }
 
 
