@@ -275,19 +275,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="MenuFile-ExportToEPUB">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:ExportToEPUB</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="MenuFile-ExportDirectToEPUB">
-        <property name="can_focus">False</property>
-        <property name="action_name">.uno:ExportDirectToEPUB</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkSeparatorMenuItem" id="MenuFile-Separator6">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -2886,53 +2873,6 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="VclOptionalBox" id="ExportToEPUBSection">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="valign">center</property>
-                        <property name="vexpand">True</property>
-                        <child>
-                          <object class="sfxlo-NotebookbarToolBox" id="SectionBottom6">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="toolbar_style">both-horiz</property>
-                            <child>
-                              <object class="GtkToolButton" id="Files-ExportDirectToEPUB">
-                                <property name="visible">False</property>
-                                <property name="action_name">.uno:ExportDirectToEPUB</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="homogeneous">False</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkToolButton" id="Files-ExportToEPUB">
-                                <property name="action_name">.uno:ExportToEPUB</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="homogeneous">False</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <style>
-                          <class name="priority-3"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">8</property>
                       </packing>
                     </child>
                     <child>

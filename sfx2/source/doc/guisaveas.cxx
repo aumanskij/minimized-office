@@ -109,8 +109,6 @@
 #define SAVE_REQUESTED              16
 #define SAVEAS_REQUESTED            32
 #define SAVEACOPY_REQUESTED         64
-#define EPUBEXPORT_REQUESTED       128
-#define EPUBDIRECTEXPORT_REQUESTED 256
 #define SAVEASREMOTE_REQUESTED      -1
 
 // possible statuses of save operation
@@ -138,12 +136,8 @@ sal_uInt16 getSlotIDFromMode( sal_Int16 nStoreMode )
         nResult = SID_EXPORTDOC;
     else if ( nStoreMode == ( EXPORT_REQUESTED | PDFEXPORT_REQUESTED ) )
         nResult = SID_EXPORTDOCASPDF;
-    else if ( nStoreMode == ( EXPORT_REQUESTED | EPUBEXPORT_REQUESTED ) )
-        nResult = SID_EXPORTDOCASEPUB;
     else if ( nStoreMode == ( EXPORT_REQUESTED | PDFEXPORT_REQUESTED | PDFDIRECTEXPORT_REQUESTED ) )
         nResult = SID_DIRECTEXPORTDOCASPDF;
-    else if ( nStoreMode == ( EXPORT_REQUESTED | EPUBEXPORT_REQUESTED | EPUBDIRECTEXPORT_REQUESTED ) )
-        nResult = SID_DIRECTEXPORTDOCASEPUB;
     else if ( nStoreMode == SAVEAS_REQUESTED || nStoreMode == ( EXPORT_REQUESTED | WIDEEXPORT_REQUESTED ) )
         nResult = SID_SAVEASDOC;
     else if ( nStoreMode == SAVEASREMOTE_REQUESTED )
@@ -165,10 +159,6 @@ sal_Int16 getStoreModeFromSlotName( std::u16string_view aSlotName )
         nResult = EXPORT_REQUESTED | PDFEXPORT_REQUESTED;
     else if ( aSlotName == u"ExportDirectToPDF" )
         nResult = EXPORT_REQUESTED | PDFEXPORT_REQUESTED | PDFDIRECTEXPORT_REQUESTED;
-    else if ( aSlotName == u"ExportToEPUB" )
-        nResult = EXPORT_REQUESTED | EPUBEXPORT_REQUESTED;
-    else if ( aSlotName == u"ExportDirectToEPUB" )
-        nResult = EXPORT_REQUESTED | EPUBEXPORT_REQUESTED | EPUBDIRECTEXPORT_REQUESTED;
     else if ( aSlotName == u"Save" )
         nResult = SAVE_REQUESTED;
     else if ( aSlotName == u"SaveAs" )
@@ -519,17 +509,6 @@ uno::Sequence< beans::PropertyValue > ModelData_Impl::GetPreselectedFilter_Impl(
         uno::Sequence< beans::NamedValue > aSearchRequest
         {
             { "Type", css::uno::Any(OUString("pdf_Portable_Document_Format")) },
-            { "DocumentService", css::uno::Any(GetDocServiceName()) }
-        };
-
-        aFilterProps = ::comphelper::MimeConfigurationHelper::SearchForFilter( m_pOwner->GetFilterQuery(), aSearchRequest, nMust, nDont );
-    }
-    else if ( ( nStoreMode != SAVEASREMOTE_REQUESTED ) && ( nStoreMode & EPUBEXPORT_REQUESTED ) )
-    {
-        // Preselect EPUB filter for export.
-        uno::Sequence<beans::NamedValue> aSearchRequest
-        {
-            { "Type", css::uno::Any(OUString("writer_EPUB_Document")) },
             { "DocumentService", css::uno::Any(GetDocServiceName()) }
         };
 
@@ -914,7 +893,7 @@ bool ModelData_Impl::OutputFileDialog( sal_Int16 nStoreMode,
 
     if( ( nStoreMode & EXPORT_REQUESTED ) && !( nStoreMode & WIDEEXPORT_REQUESTED ) )
     {
-        if ( (nStoreMode & PDFEXPORT_REQUESTED) || (nStoreMode & EPUBEXPORT_REQUESTED) )
+        if ( nStoreMode & PDFEXPORT_REQUESTED )
             aDialogMode = css::ui::dialogs::TemplateDescription::
                 FILESAVE_AUTOEXTENSION;
         else
@@ -945,13 +924,6 @@ bool ModelData_Impl::OutputFileDialog( sal_Int16 nStoreMode,
             const OUString aFilterUIName = aPreselectedFilterPropsHM.getUnpackedValueOrDefault( "UIName", OUString() );
             pFileDlg.reset(new sfx2::FileDialogHelper( aDialogMode, aDialogFlags, aFilterUIName, u"pdf", rStandardDir, rDenyList, pFrameWin ));
             pFileDlg->SetCurrentFilter( aFilterUIName );
-        }
-        else if ((nStoreMode & EPUBEXPORT_REQUESTED) && !aPreselectedFilterPropsHM.empty())
-        {
-            // This is an EPUB export, the filter options has been shown already.
-            const OUString aFilterUIName = aPreselectedFilterPropsHM.getUnpackedValueOrDefault( "UIName", OUString() );
-            pFileDlg.reset(new sfx2::FileDialogHelper(aDialogMode, aDialogFlags, aFilterUIName, u"epub", rStandardDir, rDenyList, pFrameWin));
-            pFileDlg->SetCurrentFilter(aFilterUIName);
         }
         else
         {
@@ -1552,10 +1524,9 @@ bool SfxStoringHelper::GUIStoreModel( const uno::Reference< frame::XModel >& xMo
     ::comphelper::SequenceAsHashMap::const_iterator aFileNameIter = aModelData.GetMediaDescr().find( OUString("URL") );
 
     bool bPDFOptions = (m_nStoreMode & PDFEXPORT_REQUESTED) && !(m_nStoreMode & PDFDIRECTEXPORT_REQUESTED);
-    bool bEPUBOptions = (m_nStoreMode & EPUBEXPORT_REQUESTED) && !(m_nStoreMode & EPUBDIRECTEXPORT_REQUESTED);
-    if ( ( m_nStoreMode & EXPORT_REQUESTED ) && (bPDFOptions || bEPUBOptions) )
+    if ( ( m_nStoreMode & EXPORT_REQUESTED ) && bPDFOptions )
     {
-        // this is PDF or EPUB export, the filter options dialog should be shown before the export
+        // this is PDF export, the filter options dialog should be shown before the export
         aModelData.GetMediaDescr()[aFilterNameString] <<= aFilterName;
         if ( aModelData.GetMediaDescr().find( "FilterFlags" ) == aModelData.GetMediaDescr().end()
           && aModelData.GetMediaDescr().find( aFilterOptionsString ) == aModelData.GetMediaDescr().end()
@@ -1717,7 +1688,7 @@ bool SfxStoringHelper::FinishGUIStoreModel(::comphelper::SequenceAsHashMap::cons
     bool bFilterFlagsSet = ( aIter != aModelData.GetMediaDescr().end() );
 
     // check if the filter Dialog has not been called before
-    if( !( nStoreMode & PDFEXPORT_REQUESTED ) && !( nStoreMode & EPUBEXPORT_REQUESTED ) && !bFilterFlagsSet
+    if( !( nStoreMode & PDFEXPORT_REQUESTED ) && !bFilterFlagsSet
         && ( ( nStoreMode & EXPORT_REQUESTED ) || bUseFilterOptions ) )
     {
         // execute filter options dialog

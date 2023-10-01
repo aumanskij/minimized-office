@@ -307,7 +307,6 @@ const ExtensionMap aWriterExtensionMap[] =
     { "odt",   "writer8" },
     { "ott",   "writer8_template" },
     { "pdf",   "writer_pdf_Export" },
-    { "epub",  "EPUB" },
     { "rtf",   "Rich Text Format" },
     { "txt",   "Text" },
     { "xhtml", "XHTML Writer File" },

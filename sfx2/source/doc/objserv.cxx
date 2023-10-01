@@ -917,9 +917,9 @@ void SfxObjectShell::ExecFile_Impl(SfxRequest &rReq)
         case SID_SAVEASREMOTE:
         case SID_SAVEDOC:
         {
-            // so far only pdf and epub support Async interface
+            // so far only pdf support Async interface
             if (comphelper::LibreOfficeKit::isActive() && rReq.GetCallMode() == SfxCallMode::ASYNCHRON
-                && (nId == SID_EXPORTDOCASEPUB || nId == SID_EXPORTDOCASPDF))
+                && nId == SID_EXPORTDOCASPDF)
                 bIsAsync = true;
 
             // derived class may decide to abort this

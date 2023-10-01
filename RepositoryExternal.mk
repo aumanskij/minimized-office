@@ -1703,40 +1703,6 @@ endif
 
 endif # SYSTEM_ODFGEN
 
-ifneq ($(SYSTEM_EPUBGEN),)
-
-define gb_LinkTarget__use_epubgen
-$(call gb_LinkTarget_set_include,$(1),\
-	$$(INCLUDE) \
-    $(EPUBGEN_CFLAGS) \
-)
-$(call gb_LinkTarget_add_libs,$(1),$(EPUBGEN_LIBS))
-
-endef
-gb_ExternalProject__use_epubgen :=
-
-else # !SYSTEM_EPUBGEN
-ifneq ($(ENABLE_WASM_STRIP_EPUB),TRUE)
-
-define gb_LinkTarget__use_epubgen
-$(call gb_LinkTarget_set_include,$(1),\
-	-I$(call gb_UnpackedTarball_get_dir,libepubgen)/inc \
-	$$(INCLUDE) \
-)
-$(call gb_LinkTarget_add_libs,$(1),\
-	$(call gb_UnpackedTarball_get_dir,libepubgen)/src/lib/.libs/libepubgen-0.1$(gb_StaticLibrary_PLAINEXT) \
-)
-$(call gb_LinkTarget_use_external_project,$(1),libepubgen)
-
-endef
-define gb_ExternalProject__use_epubgen
-$(call gb_ExternalProject_use_external_project,$(1),libepubgen)
-
-endef
-
-endif # ENABLE_WASM_STRIP_EPUB
-endif # SYSTEM_EPUBGEN
-
 ifneq ($(SYSTEM_REVENGE),)
 
 define gb_LinkTarget__use_revenge

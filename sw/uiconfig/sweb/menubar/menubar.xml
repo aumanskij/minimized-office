@@ -50,8 +50,6 @@
         <menu:menupopup>
           <menu:menuitem menu:id=".uno:ExportToPDF" menu:style="text"/>
           <menu:menuitem menu:id=".uno:ExportDirectToPDF" menu:style="text"/>
-          <menu:menuitem menu:id=".uno:ExportToEPUB" menu:style="text"/>
-          <menu:menuitem menu:id=".uno:ExportDirectToEPUB" menu:style="text"/>
         </menu:menupopup>
       </menu:menu>
       <menu:menu menu:id=".uno:SendToMenu">
