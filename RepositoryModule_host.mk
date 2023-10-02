@@ -49,7 +49,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	avmedia \
 	basegfx \
 	basic \
-	binaryurp \
 	bridges \
 	cli_ure \
     codemaker \

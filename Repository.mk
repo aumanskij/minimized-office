@@ -606,7 +606,6 @@ $(eval $(call gb_Helper_register_plugins_for_install,PLAINLIBS_URE,ure, \
 ))
 
 $(eval $(call gb_Helper_register_libraries_for_install,PRIVATELIBS_URE,ure, \
-	binaryurp \
 	bootstrap \
 	introspection \
 	invocadapt \
