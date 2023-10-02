@@ -673,7 +673,6 @@ $(eval $(call gb_Helper_register_libraries_for_install,PLAINLIBS_OOO,ooo, \
 	ucphier1 \
 	ucppkg1 \
     $(call gb_CondExeUnopkg,unopkgapp) \
-	xmlsecurity \
 	xsec_xmlsec \
 	xstor \
 	$(if $(filter $(OS),MACOSX), \

@@ -170,7 +170,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	xmloff \
 	xmlreader \
 	xmlscript \
-	xmlsecurity \
 ))
 
 ifeq (,$(DISABLE_DYNLOADING))
