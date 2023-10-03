@@ -2003,13 +2003,6 @@ libo_FUZZ_ARG_ENABLE(cipher-openssl-backend,
         [Enable using OpenSSL as the actual implementation of the rtl/cipher.h functionality.
          Requires --enable-openssl.]))
 
-AC_ARG_ENABLE(nss,
-    AS_HELP_STRING([--disable-nss],
-        [Disable using NSS. If disabled,
-         components will use openssl. Work in progress,
-         use only if you are hacking on it.]),
-,enable_nss=yes)
-
 AC_ARG_ENABLE(library-bin-tar,
     AS_HELP_STRING([--enable-library-bin-tar],
         [Enable the building and reused of tarball of binary build for some 'external' libraries.
@@ -11077,20 +11070,6 @@ else
     AC_MSG_RESULT([no])
 fi
 AC_SUBST([ENABLE_CIPHER_OPENSSL_BACKEND])
-
-dnl ===================================================================
-dnl Select the crypto backends used by LO
-dnl ===================================================================
-
-if test "$build_crypto" = yes; then
-    if test "$OS" = WNT; then
-        BUILD_TYPE="$BUILD_TYPE CRYPTO_MSCAPI"
-        AC_DEFINE([USE_CRYPTO_MSCAPI])
-    elif test "$ENABLE_NSS" = TRUE; then
-        BUILD_TYPE="$BUILD_TYPE CRYPTO_NSS"
-        AC_DEFINE([USE_CRYPTO_NSS])
-    fi
-fi
 
 dnl ===================================================================
 dnl Check for system redland
