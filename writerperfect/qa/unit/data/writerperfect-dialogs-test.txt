@@ -34,5 +34,4 @@
 # This is typically a hint that these should be hard-coded in the
 # test case since they need some document and model data to work
 
-writerperfect/ui/exportepub.ui
 #writerperfect/ui/wpfencodingdialog.ui

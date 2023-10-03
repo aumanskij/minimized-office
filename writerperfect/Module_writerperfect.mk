@@ -46,14 +46,9 @@ $(eval $(call gb_Module_add_check_targets,writerperfect,\
 $(eval $(call gb_Module_add_slowcheck_targets,writerperfect,\
 	CppunitTest_writerperfect_calc \
 	CppunitTest_writerperfect_draw \
-	$(if $(SYSTEM_EPUBGEN),,CppunitTest_writerperfect_epubexport) \
 	CppunitTest_writerperfect_import \
 	CppunitTest_writerperfect_writer \
 	Library_wpftqahelper \
-))
-
-$(eval $(call gb_Module_add_uicheck_targets,writerperfect,\
-    UITest_writerperfect_epubexport \
 ))
 
 # screenshots

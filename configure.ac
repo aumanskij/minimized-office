@@ -3086,7 +3086,6 @@ if test "$enable_wasm_strip" = "yes"; then
     enable_skia=no
     enable_xmlhelp=no
     enable_zxing=no
-    test_libepubgen=no
     test_libcdr=no
     test_libcmis=no
     test_libfreehand=no
@@ -3108,15 +3107,10 @@ if test "$enable_wasm_strip" = "yes"; then
     AC_DEFINE(ENABLE_WASM_STRIP_CANVAS)
 #    AC_DEFINE(ENABLE_WASM_STRIP_CHART)
     AC_DEFINE(ENABLE_WASM_STRIP_DBACCESS)
-    AC_DEFINE(ENABLE_WASM_STRIP_EPUB)
     AC_DEFINE(ENABLE_WASM_STRIP_GUESSLANG)
 #    AC_DEFINE(ENABLE_WASM_STRIP_HUNSPELL)
     AC_DEFINE(ENABLE_WASM_STRIP_LANGUAGETOOL)
-    AC_DEFINE(ENABLE_WASM_STRIP_PINGUSER)
-    AC_DEFINE(ENABLE_WASM_STRIP_PREMULTIPLY)
     AC_DEFINE(ENABLE_WASM_STRIP_RECENT)
-    AC_DEFINE(ENABLE_WASM_STRIP_RECOVERYUI)
-    AC_DEFINE(ENABLE_WASM_STRIP_SPLASH)
     AC_DEFINE(ENABLE_WASM_STRIP_SWEXPORTS)
     AC_DEFINE(ENABLE_WASM_STRIP_SCEXPORTS)
 fi
@@ -9581,8 +9575,6 @@ REVENGE_LIBS_internal="-L${librevenge_libdir} -lrevenge-0.0"
 libo_CHECK_SYSTEM_MODULE([librevenge],[REVENGE],[librevenge-0.0 >= 0.0.1])
 
 libo_CHECK_SYSTEM_MODULE([libodfgen],[ODFGEN],[libodfgen-0.1])
-
-libo_CHECK_SYSTEM_MODULE([libepubgen],[EPUBGEN],[libepubgen-0.1])
 
 WPD_CFLAGS_internal="-I${WORKDIR}/UnpackedTarball/libwpd/inc"
 AS_IF([test "$COM" = "MSC"],

@@ -101,9 +101,6 @@
 #include <osl/process.h>
 #include <rtl/byteseq.hxx>
 #include <unotools/pathoptions.hxx>
-#if !ENABLE_WASM_STRIP_PINGUSER
-#include <unotools/VersionConfig.hxx>
-#endif
 #include <rtl/bootstrap.hxx>
 #include <vcl/test/GraphicsRenderTests.hxx>
 #include <vcl/help.hxx>
@@ -343,12 +340,6 @@ void runGraphicsRenderTests()
 {
     if (comphelper::LibreOfficeKit::isActive())
         return;
-#if !ENABLE_WASM_STRIP_PINGUSER
-    if (!utl::isProductVersionUpgraded(false))
-    {
-        return;
-    }
-#endif
     GraphicsRenderTests TestObject;
     TestObject.run();
 }
@@ -980,39 +971,6 @@ struct RefClearGuard
     @param  bEmergencySave
             differs between EMERGENCY_SAVE and RECOVERY
 */
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-bool impl_callRecoveryUI(bool bEmergencySave     ,
-                         bool bExistsRecoveryData)
-{
-    constexpr OUStringLiteral COMMAND_EMERGENCYSAVE = u"vnd.sun.star.autorecovery:/doEmergencySave";
-    constexpr OUStringLiteral COMMAND_RECOVERY = u"vnd.sun.star.autorecovery:/doAutoRecovery";
-
-    css::uno::Reference< css::uno::XComponentContext > xContext = ::comphelper::getProcessComponentContext();
-
-    g_xRecoveryUI.set(
-        xContext->getServiceManager()->createInstanceWithContext("com.sun.star.comp.svx.RecoveryUI", xContext),
-        css::uno::UNO_QUERY_THROW);
-    RefClearGuard<Reference< css::frame::XSynchronousDispatch >> refClearGuard(g_xRecoveryUI);
-
-    Reference< css::util::XURLTransformer > xURLParser =
-        css::util::URLTransformer::create(xContext);
-
-    css::util::URL aURL;
-    if (bEmergencySave)
-        aURL.Complete = COMMAND_EMERGENCYSAVE;
-    else if (bExistsRecoveryData)
-        aURL.Complete = COMMAND_RECOVERY;
-    else
-        return false;
-
-    xURLParser->parseStrict(aURL);
-
-    css::uno::Any aRet = g_xRecoveryUI->dispatchWithReturnValue(aURL, css::uno::Sequence< css::beans::PropertyValue >());
-    bool bRet = false;
-    aRet >>= bRet;
-    return bRet;
-}
-#endif
 
 bool impl_bringToFrontRecoveryUI()
 {
@@ -1161,11 +1119,6 @@ void Desktop::Exception(ExceptionCategory nCategory)
         // Save all open documents so they will be reopened
         // the next time the application is started
         // returns true if at least one document could be saved...
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-        bRestart = impl_callRecoveryUI(
-                        true , // force emergency save
-                        false);
-#endif
     }
 
     FlushConfiguration();
@@ -1179,10 +1132,6 @@ void Desktop::Exception(ExceptionCategory nCategory)
             osl_removeSignalHandler( pSignalHandler );
 
         restartOnMac(false);
-#if !ENABLE_WASM_STRIP_SPLASH
-        if ( m_rSplashScreen.is() )
-            m_rSplashScreen->reset();
-#endif
 
         _exit( EXITHELPER_CRASH_WITH_RESTART );
     }
@@ -1283,9 +1232,6 @@ int Desktop::Main()
     Translate::SetReadStringHook(ReplaceStringHookProc);
 
     // Startup screen
-#if !ENABLE_WASM_STRIP_SPLASH
-    OpenSplashScreen();
-#endif
 
     SetSplashScreenProgress(10);
 
@@ -1696,10 +1642,6 @@ int Desktop::doShutdown()
     if ( bRR )
     {
         restartOnMac(true);
-#if !ENABLE_WASM_STRIP_SPLASH
-        if ( m_rSplashScreen.is() )
-            m_rSplashScreen->reset();
-#endif
 
         return EXITHELPER_NORMAL_RESTART;
     }
@@ -1996,35 +1938,6 @@ void Desktop::OpenClients()
     else
     {
         bool bExistsRecoveryData = false;
-#if !ENABLE_WASM_STRIP_RECOVERYUI
-        bool bCrashed            = false;
-        bool bExistsSessionData  = false;
-        bool const bDisableRecovery
-            = getenv("OOO_DISABLE_RECOVERY") != nullptr
-              || IsOnSystemEventLoop()
-              || !officecfg::Office::Recovery::RecoveryInfo::Enabled::get();
-
-        impl_checkRecoveryState(bCrashed, bExistsRecoveryData, bExistsSessionData);
-
-        if ( !bDisableRecovery &&
-            (
-                bExistsRecoveryData || // => crash with files    => recovery
-                bCrashed               // => crash without files => error report
-            )
-           )
-        {
-            try
-            {
-                impl_callRecoveryUI(
-                    false          , // false => force recovery instead of emergency save
-                    bExistsRecoveryData);
-            }
-            catch(const css::uno::Exception&)
-            {
-                TOOLS_WARN_EXCEPTION( "desktop.app", "Error during recovery");
-            }
-        }
-#endif
 
         Reference< XSessionManagerListener2 > xSessionListener;
         try
@@ -2383,92 +2296,19 @@ void Desktop::HandleAppEvent( const ApplicationEvent& rAppEvent )
     }
 }
 
-#if !ENABLE_WASM_STRIP_SPLASH
-void Desktop::OpenSplashScreen()
-{
-    const CommandLineArgs &rCmdLine = GetCommandLineArgs();
-    // Show intro only if this is normal start (e.g. no server, no quickstart, no printing )
-    if ( !(!rCmdLine.IsInvisible() &&
-         !rCmdLine.IsHeadless() &&
-         !rCmdLine.IsQuickstart() &&
-         !rCmdLine.IsMinimized() &&
-         !rCmdLine.IsNoLogo() &&
-         !rCmdLine.IsTerminateAfterInit() &&
-         rCmdLine.GetPrintList().empty() &&
-         rCmdLine.GetPrintToList().empty() &&
-         rCmdLine.GetConversionList().empty()) )
-        return;
-
-    // Determine application name from command line parameters
-    OUString aAppName;
-    if ( rCmdLine.IsWriter() )
-        aAppName = "writer";
-    else if ( rCmdLine.IsCalc() )
-        aAppName = "calc";
-    else if ( rCmdLine.IsDraw() )
-        aAppName = "draw";
-    else if ( rCmdLine.IsImpress() )
-        aAppName = "impress";
-    else if ( rCmdLine.IsBase() )
-        aAppName = "base";
-    else if ( rCmdLine.IsGlobal() )
-        aAppName = "global";
-    else if ( rCmdLine.IsMath() )
-        aAppName = "math";
-    else if ( rCmdLine.IsWeb() )
-        aAppName = "web";
-
-    // Which splash to use
-    OUString aSplashService( "com.sun.star.office.SplashScreen" );
-    if ( rCmdLine.HasSplashPipe() )
-        aSplashService = "com.sun.star.office.PipeSplashScreen";
-
-    Sequence< Any > aSeq{ Any(true) /* bVisible */, Any(aAppName) };
-    css::uno::Reference< css::uno::XComponentContext > xContext = ::comphelper::getProcessComponentContext();
-    m_rSplashScreen.set(
-        xContext->getServiceManager()->createInstanceWithArgumentsAndContext(aSplashService, aSeq, xContext),
-        UNO_QUERY);
-
-    if(m_rSplashScreen.is())
-            m_rSplashScreen->start("SplashScreen", 100);
-
-}
-#endif
 
 void Desktop::SetSplashScreenProgress(sal_Int32 iProgress)
 {
-#if ENABLE_WASM_STRIP_SPLASH
     (void) iProgress;
-#else
-    if(m_rSplashScreen.is())
-    {
-        m_rSplashScreen->setValue(iProgress);
-    }
-#endif
 }
 
 void Desktop::SetSplashScreenText( const OUString& rText )
 {
-#if ENABLE_WASM_STRIP_SPLASH
     (void) rText;
-#else
-    if( m_rSplashScreen.is() )
-    {
-        m_rSplashScreen->setText( rText );
-    }
-#endif
 }
 
 void Desktop::CloseSplashScreen()
 {
-#if !ENABLE_WASM_STRIP_SPLASH
-    if(m_rSplashScreen.is())
-    {
-        SolarMutexGuard ensureSolarMutex;
-        m_rSplashScreen->end();
-        m_rSplashScreen = nullptr;
-    }
-#endif
 }
 
 

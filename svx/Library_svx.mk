@@ -23,7 +23,6 @@ $(eval $(call gb_Library_set_componentfile,svx,svx/util/svx,services))
 
 $(eval $(call gb_Library_add_componentimpls,svx, \
     $(call gb_Helper_optional,BREAKPAD,crashreport) \
-    $(if $(ENABLE_WASM_STRIP_RECOVERYUI),,recoveryui) \
 ))
 
 $(eval $(call gb_Library_set_include,svx,\
@@ -85,13 +84,6 @@ $(eval $(call gb_Library_use_externals,svx,\
 	icuuc \
 	icu_headers \
 ))
-
-ifneq ($(ENABLE_WASM_STRIP_RECOVERYUI),TRUE)
-$(eval $(call gb_Library_add_exception_objects,svx,\
-    svx/source/dialog/docrecovery \
-    svx/source/unodraw/recoveryui \
-))
-endif
 
 ifneq ($(ENABLE_WASM_STRIP_ACCESSIBILITY),TRUE)
 $(eval $(call gb_Library_add_exception_objects,svx,\

@@ -34,7 +34,6 @@ $(eval $(call gb_Module_add_moduledirs,external,\
 	$(call gb_Helper_optional,EBOOK,libebook) \
 	$(call gb_Helper_optional,EPM,epm) \
 	$(call gb_Helper_optional,EPOXY,epoxy) \
-	$(call gb_Helper_optional,EPUBGEN,libepubgen) \
 	$(call gb_Helper_optional,EXPAT,expat) \
 	$(call gb_Helper_optional,FIREBIRD,firebird) \
 	$(call gb_Helper_optional,FONTCONFIG,fontconfig) \

@@ -238,16 +238,6 @@ shell SfxObjectShell
         ExecMethod = ExecFile_Impl ;
         StateMethod = GetState_Impl ;
     ]
-    SID_EXPORTDOCASEPUB
-    [
-        ExecMethod = ExecFile_Impl ;
-        StateMethod = GetState_Impl ;
-    ]
-    SID_DIRECTEXPORTDOCASEPUB
-    [
-        ExecMethod = ExecFile_Impl ;
-        StateMethod = GetState_Impl ;
-    ]
     SID_REDACTDOC
     [
         ExecMethod = ExecFile_Impl ;

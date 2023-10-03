@@ -1504,13 +1504,8 @@ AbstractDialogFactory_Impl::CreateAboutDialog(weld::Window* pParent)
 VclPtr<VclAbstractDialog>
 AbstractDialogFactory_Impl::CreateTipOfTheDayDialog(weld::Window* pParent)
 {
-#if !ENABLE_WASM_STRIP_PINGUSER
-    return VclPtr<CuiAbstractControllerAsync_Impl>::Create(
-        std::make_shared<TipOfTheDayDialog>(pParent));
-#else
     (void) pParent;
     return nullptr;
-#endif
 }
 
 VclPtr<VclAbstractDialog>
