@@ -260,7 +260,6 @@ $(eval $(call gb_Helper_register_executables_for_install,UREBIN,ure,\
 $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,base, \
 	abp \
 	dbp \
-	dbu \
 ))
 
 $(eval $(call gb_Helper_register_libraries_for_install,OOOLIBS,calc, \

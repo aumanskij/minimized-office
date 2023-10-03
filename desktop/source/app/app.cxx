@@ -20,7 +20,6 @@
 #include <memory>
 #include <config_features.h>
 #include <config_feature_desktop.h>
-#include <config_feature_opencl.h>
 #include <config_java.h>
 #include <config_folders.h>
 #include <config_extensions.h>
@@ -1559,11 +1558,6 @@ int Desktop::Main()
         if ( xDesktop.is() )
             xDesktop->addTerminateListener( new RequestHandlerController );
         SetSplashScreenProgress(100);
-
-        // FIXME: move this somewhere sensible.
-#if HAVE_FEATURE_OPENCL
-        CheckOpenCLCompute(xDesktop);
-#endif
 
 #if !defined(EMSCRIPTEN)
         //Running the VCL graphics rendering tests

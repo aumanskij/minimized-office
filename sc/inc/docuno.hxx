@@ -47,7 +47,6 @@
 #include <com/sun/star/sheet/XSheetAnnotations.hpp>
 #include <com/sun/star/beans/XPropertySet.hpp>
 #include <com/sun/star/sheet/XCellRangesAccess.hpp>
-#include <com/sun/star/sheet/opencl/XOpenCLSelection.hpp>
 #include <com/sun/star/util/XChangesNotifier.hpp>
 #include <com/sun/star/uno/XAggregation.hpp>
 #include <cppuhelper/implbase.hxx>
@@ -56,7 +55,6 @@
 #include <vcl/ITiledRenderable.hxx>
 
 namespace com::sun::star::chart2::data { class XDataProvider; }
-namespace com::sun::star::sheet::opencl { struct OpenCLPlatform; }
 
 class ScDocShell;
 class ScAnnotationObj;
@@ -89,8 +87,7 @@ class SC_DLLPUBLIC ScModelObj : public SfxBaseModel,
                     public SvxFmMSFactory,  ///< derived from XMultiServiceFactory
                     public css::lang::XServiceInfo,
                     public css::util::XChangesNotifier,
-                    public css::chart2::XDataProviderAccess,
-                    public css::sheet::opencl::XOpenCLSelection
+                    public css::chart2::XDataProviderAccess
 {
 private:
     SfxItemPropertySet      aPropSet;
@@ -269,34 +266,6 @@ public:
                             /// XChangesNotifier
     virtual void SAL_CALL addChangesListener( const css::uno::Reference< css::util::XChangesListener >& aListener ) override;
     virtual void SAL_CALL removeChangesListener( const css::uno::Reference< css::util::XChangesListener >& aListener ) override;
-
-    // XOpenCLSelection
-    virtual sal_Bool SAL_CALL isOpenCLEnabled() override;
-
-    virtual void SAL_CALL enableOpenCL(sal_Bool bEnable) override;
-
-    virtual void SAL_CALL enableAutomaticDeviceSelection(sal_Bool bForce) override;
-
-    virtual void SAL_CALL disableAutomaticDeviceSelection() override;
-
-    virtual void SAL_CALL selectOpenCLDevice( sal_Int32 platform, sal_Int32 device ) override;
-
-    virtual sal_Int32 SAL_CALL getPlatformID() override;
-
-    virtual sal_Int32 SAL_CALL getDeviceID() override;
-
-    virtual css::uno::Sequence< css::sheet::opencl::OpenCLPlatform >
-        SAL_CALL getOpenCLPlatforms() override;
-
-    virtual void SAL_CALL enableOpcodeSubsetTest() override;
-
-    virtual void SAL_CALL disableOpcodeSubsetTest() override;
-
-    virtual sal_Bool SAL_CALL isOpcodeSubsetTested() override;
-
-    virtual void SAL_CALL setFormulaCellNumberLimit( sal_Int32 number ) override;
-
-    virtual sal_Int32 SAL_CALL getFormulaCellNumberLimit() override;
 
     /// @see vcl::ITiledRenderable::paintTile().
     virtual void paintTile( VirtualDevice& rDevice,

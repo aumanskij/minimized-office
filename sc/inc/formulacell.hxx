@@ -167,9 +167,6 @@ private:
                                         bool& bDependencyComputed,
                                         bool& bDependencyCheckFailed,
                                         SCROW nStartOffset, SCROW nEndOffset);
-    bool InterpretFormulaGroupOpenCL(sc::FormulaLogger::GroupScope& aScope,
-                                     bool& bDependencyComputed,
-                                     bool& bDependencyCheckFailed);
     bool InterpretInvariantFormulaGroup();
 
 public:

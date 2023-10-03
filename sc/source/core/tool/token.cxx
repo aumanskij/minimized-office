@@ -1363,16 +1363,6 @@ void ScTokenArray::CheckToken( const FormulaToken& r )
 
     if (SC_OPCODE_START_FUNCTION <= eOp && eOp < SC_OPCODE_STOP_FUNCTION)
     {
-        if (ScInterpreter::GetGlobalConfig().mbOpenCLSubsetOnly &&
-            ScInterpreter::GetGlobalConfig().mpOpenCLSubsetOpCodes->find(eOp) == ScInterpreter::GetGlobalConfig().mpOpenCLSubsetOpCodes->end())
-        {
-            SAL_INFO("sc.opencl", "opcode " << formula::FormulaCompiler().GetOpCodeMap(sheet::FormulaLanguage::ENGLISH)->getSymbol(eOp)
-                << "(" << int(eOp) << ") disables vectorisation for formula group");
-            meVectorState = FormulaVectorDisabledNotInSubSet;
-            mbOpenCLEnabled = false;
-            return;
-        }
-
         // We support vectorization for the following opcodes.
         switch (eOp)
         {
@@ -1551,10 +1541,6 @@ void ScTokenArray::CheckToken( const FormulaToken& r )
             // Don't change the state.
             break;
             default:
-                SAL_INFO("sc.opencl", "opcode " << formula::FormulaCompiler().GetOpCodeMap(sheet::FormulaLanguage::ENGLISH)->getSymbol(eOp)
-                    << "(" << int(eOp) << ") disables vectorisation for formula group");
-                meVectorState = FormulaVectorDisabledByOpCode;
-                mbOpenCLEnabled = false;
                 return;
         }
     }
@@ -1591,25 +1577,9 @@ void ScTokenArray::CheckToken( const FormulaToken& r )
             case svRefList:
             case svSep:
             case svUnknown:
-                // We don't support vectorization on these.
-                SAL_INFO("sc.opencl", "opcode ocPush: variable type " << StackVarEnumToString(r.GetType()) << " disables vectorisation for formula group");
-                meVectorState = FormulaVectorDisabledByStackVariable;
-                mbOpenCLEnabled = false;
                 return;
             default:
                 ;
-        }
-    }
-    else if (SC_OPCODE_START_BIN_OP <= eOp && eOp < SC_OPCODE_STOP_UN_OP)
-    {
-        if (ScInterpreter::GetGlobalConfig().mbOpenCLSubsetOnly &&
-            ScInterpreter::GetGlobalConfig().mpOpenCLSubsetOpCodes->find(eOp) == ScInterpreter::GetGlobalConfig().mpOpenCLSubsetOpCodes->end())
-        {
-            SAL_INFO("sc.opencl", "opcode " << formula::FormulaCompiler().GetOpCodeMap(sheet::FormulaLanguage::ENGLISH)->getSymbol(eOp)
-                << "(" << int(eOp) << ") disables vectorisation for formula group");
-            meVectorState = FormulaVectorDisabledNotInSubSet;
-            mbOpenCLEnabled = false;
-            return;
         }
     }
     else
@@ -1638,13 +1608,6 @@ void ScTokenArray::CheckToken( const FormulaToken& r )
                 // create the implicit intersection.
 
             case ocColRowNameAuto:
-                // Auto column/row names lead to references computed in
-                // interpreter.
-
-                SAL_INFO("sc.opencl", "opcode " << formula::FormulaCompiler().GetOpCodeMap(sheet::FormulaLanguage::ENGLISH)->getSymbol(eOp)
-                    << "(" << int(eOp) << ") disables vectorisation for formula group");
-                meVectorState = FormulaVectorDisabledByOpCode;
-                mbOpenCLEnabled = false;
                 return;
 
             // Known good, don't change state.
@@ -1798,8 +1761,7 @@ void ScTokenArray::GenHash()
 
 void ScTokenArray::ResetVectorState()
 {
-    mbOpenCLEnabled = ScCalcConfig::isOpenCLEnabled();
-    meVectorState = mbOpenCLEnabled ? FormulaVectorEnabled : FormulaVectorDisabled;
+    meVectorState = FormulaVectorDisabled;
     mbThreadingEnabled = ScCalcConfig::isThreadingEnabled();
 }
 
@@ -1887,7 +1849,6 @@ ScTokenArray& ScTokenArray::operator=( const ScTokenArray& rArr )
     Assign( rArr );
     mnHashValue = rArr.mnHashValue;
     meVectorState = rArr.meVectorState;
-    mbOpenCLEnabled = rArr.mbOpenCLEnabled;
     mbThreadingEnabled = rArr.mbThreadingEnabled;
     return *this;
 }
@@ -1897,7 +1858,6 @@ ScTokenArray& ScTokenArray::operator=( ScTokenArray&& rArr )
     mxSheetLimits = std::move(rArr.mxSheetLimits);
     mnHashValue = rArr.mnHashValue;
     meVectorState = rArr.meVectorState;
-    mbOpenCLEnabled = rArr.mbOpenCLEnabled;
     mbThreadingEnabled = rArr.mbThreadingEnabled;
     Move(std::move(rArr));
     return *this;
@@ -1937,7 +1897,6 @@ std::unique_ptr<ScTokenArray> ScTokenArray::Clone() const
     p->bHyperLink = bHyperLink;
     p->mnHashValue = mnHashValue;
     p->meVectorState = meVectorState;
-    p->mbOpenCLEnabled = mbOpenCLEnabled;
     p->mbThreadingEnabled = mbThreadingEnabled;
     p->mbFromRangeName = mbFromRangeName;
     p->mbShareable = mbShareable;
@@ -1995,7 +1954,6 @@ ScTokenArray ScTokenArray::CloneValue() const
     aNew.bHyperLink = bHyperLink;
     aNew.mnHashValue = mnHashValue;
     aNew.meVectorState = meVectorState;
-    aNew.mbOpenCLEnabled = mbOpenCLEnabled;
     aNew.mbThreadingEnabled = mbThreadingEnabled;
     aNew.mbFromRangeName = mbFromRangeName;
     aNew.mbShareable = mbShareable;

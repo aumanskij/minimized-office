@@ -17,7 +17,6 @@
  *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
  */
 
-#include <config_feature_opencl.h>
 
 #include <sal/config.h>
 #include <sal/log.hxx>
@@ -67,9 +66,6 @@
 #include <formulalogger.hxx>
 #include <com/sun/star/sheet/FormulaLanguage.hpp>
 
-#if HAVE_FEATURE_OPENCL
-#include <opencl/openclwrapper.hxx>
-#endif
 
 #include <memory>
 #include <map>
@@ -4675,13 +4671,9 @@ bool ScFormulaCell::InterpretFormulaGroup(SCROW nStartOffset, SCROW nEndOffset)
 
     // Use SC_FORCE_CALCULATION=opencl/threads to force calculation e.g. for unittests
     static ForceCalculationType forceType = ScCalcConfig::getForceCalculationType();
-    if (forceType == ForceCalculationCore
-        || ( GetWeight() < ScInterpreter::GetGlobalConfig().mnOpenCLMinimumFormulaGroupSize
-            && forceType != ForceCalculationOpenCL
-            && forceType != ForceCalculationThreads))
+    if (forceType == ForceCalculationCore || forceType != ForceCalculationThreads)
     {
         mxGroup->meCalcState = sc::GroupCalcDisabled;
-        aScope.addGroupSizeThresholdMessage(*this);
         return false;
     }
 
@@ -4729,11 +4721,6 @@ bool ScFormulaCell::InterpretFormulaGroup(SCROW nStartOffset, SCROW nEndOffset)
 
     bool bDependencyComputed = false;
     bool bDependencyCheckFailed = false;
-
-    // Preference order: First try OpenCL, then threading.
-    // TODO: Do formula-group span computation for OCL too if nStartOffset/nEndOffset are non default.
-    if( InterpretFormulaGroupOpenCL(aScope, bDependencyComputed, bDependencyCheckFailed))
-        return true;
 
     if( InterpretFormulaGroupThreading(aScope, bDependencyComputed, bDependencyCheckFailed, nStartOffset, nEndOffset))
         return true;
@@ -5040,179 +5027,6 @@ bool ScFormulaCell::InterpretFormulaGroupThreading(sc::FormulaLogger::GroupScope
     }
 
     return false;
-}
-
-// To be called only from InterpretFormulaGroup().
-bool ScFormulaCell::InterpretFormulaGroupOpenCL(sc::FormulaLogger::GroupScope& aScope,
-                                                bool& bDependencyComputed,
-                                                bool& bDependencyCheckFailed)
-{
-    bool bCanVectorize = pCode->IsEnabledForOpenCL();
-    switch (pCode->GetVectorState())
-    {
-        case FormulaVectorEnabled:
-        case FormulaVectorCheckReference:
-        break;
-
-        // Not good.
-        case FormulaVectorDisabledByOpCode:
-            aScope.addMessage("group calc disabled due to vector state (non-vector-supporting opcode)");
-            break;
-        case FormulaVectorDisabledByStackVariable:
-            aScope.addMessage("group calc disabled due to vector state (non-vector-supporting stack variable)");
-            break;
-        case FormulaVectorDisabledNotInSubSet:
-            aScope.addMessage("group calc disabled due to vector state (opcode not in subset)");
-            break;
-        case FormulaVectorDisabled:
-        case FormulaVectorUnknown:
-        default:
-            aScope.addMessage("group calc disabled due to vector state (unknown)");
-            return false;
-    }
-
-    if (!bCanVectorize)
-        return false;
-
-    if (!ScCalcConfig::isOpenCLEnabled())
-    {
-        aScope.addMessage("opencl not enabled");
-        return false;
-    }
-
-    // TableOp does tricks with using a cell with different values, just bail out.
-    if(rDocument.IsInInterpreterTableOp())
-        return false;
-
-    if (bDependencyCheckFailed)
-        return false;
-
-    if(!bDependencyComputed && !CheckComputeDependencies(aScope, true, 0, mxGroup->mnLength - 1))
-    {
-        bDependencyComputed = true;
-        bDependencyCheckFailed = true;
-        return false;
-    }
-
-    bDependencyComputed = true;
-
-    // TODO : Disable invariant formula group interpretation for now in order
-    // to get implicit intersection to work.
-    if (mxGroup->mbInvariant && false)
-        return InterpretInvariantFormulaGroup();
-
-    int nMaxGroupLength = INT_MAX;
-
-#ifdef _WIN32
-    // Heuristic: Certain old low-end OpenCL implementations don't
-    // work for us with too large group lengths. 1000 was determined
-    // empirically to be a good compromise.
-    if (openclwrapper::gpuEnv.mbNeedsTDRAvoidance)
-        nMaxGroupLength = 1000;
-#endif
-
-    if (std::getenv("SC_MAX_GROUP_LENGTH"))
-        nMaxGroupLength = std::atoi(std::getenv("SC_MAX_GROUP_LENGTH"));
-
-    int nNumOnePlus;
-    const int nNumParts = splitup(GetSharedLength(), nMaxGroupLength, nNumOnePlus);
-
-    int nOffset = 0;
-    int nCurChunkSize;
-    ScAddress aOrigPos = mxGroup->mpTopCell->aPos;
-    for (int i = 0; i < nNumParts; i++, nOffset += nCurChunkSize)
-    {
-        nCurChunkSize = GetSharedLength()/nNumParts + (i < nNumOnePlus ? 1 : 0);
-
-        ScFormulaCellGroupRef xGroup;
-
-        if (nNumParts == 1)
-            xGroup = mxGroup;
-        else
-        {
-            // Ugly hack
-            xGroup = new ScFormulaCellGroup();
-            xGroup->mpTopCell = mxGroup->mpTopCell;
-            xGroup->mpTopCell->aPos = aOrigPos;
-            xGroup->mpTopCell->aPos.IncRow(nOffset);
-            xGroup->mbInvariant = mxGroup->mbInvariant;
-            xGroup->mnLength = nCurChunkSize;
-            xGroup->mpCode = std::move(mxGroup->mpCode); // temporarily transfer
-        }
-
-        ScTokenArray aCode(rDocument);
-        ScGroupTokenConverter aConverter(aCode, rDocument, *this, xGroup->mpTopCell->aPos);
-        // TODO avoid this extra compilation
-        ScCompiler aComp( rDocument, xGroup->mpTopCell->aPos, *pCode, formula::FormulaGrammar::GRAM_UNSPECIFIED, true, cMatrixFlag != ScMatrixMode::NONE );
-        aComp.CompileTokenArray();
-        if (aComp.HasUnhandledPossibleImplicitIntersections() || !aConverter.convert(*pCode, aScope))
-        {
-            if(aComp.HasUnhandledPossibleImplicitIntersections())
-            {
-                SAL_INFO("sc.opencl", "group " << xGroup->mpTopCell->aPos << " has unhandled implicit intersections, disabling");
-#ifdef DBG_UTIL
-                for( const OpCode opcode : aComp.UnhandledPossibleImplicitIntersectionsOpCodes())
-                {
-                    SAL_INFO("sc.opencl", "unhandled implicit intersection opcode "
-                        << formula::FormulaCompiler().GetOpCodeMap(com::sun::star::sheet::FormulaLanguage::ENGLISH)->getSymbol(opcode)
-                        << "(" << int(opcode) << ")");
-                }
-#endif
-            }
-            else
-                SAL_INFO("sc.opencl", "conversion of group " << xGroup->mpTopCell->aPos << " failed, disabling");
-
-            mxGroup->meCalcState = sc::GroupCalcDisabled;
-
-            // Undo the hack above
-            if (nNumParts > 1)
-            {
-                mxGroup->mpTopCell->aPos = aOrigPos;
-                xGroup->mpTopCell = nullptr;
-                mxGroup->mpCode = std::move(xGroup->mpCode);
-            }
-
-            aScope.addMessage("group token conversion failed");
-            return false;
-        }
-
-        // The converted code does not have RPN tokens yet.  The interpreter will
-        // generate them.
-        xGroup->meCalcState = mxGroup->meCalcState = sc::GroupCalcRunning;
-        sc::FormulaGroupInterpreter *pInterpreter = sc::FormulaGroupInterpreter::getStatic();
-
-        if (pInterpreter == nullptr ||
-            !pInterpreter->interpret(rDocument, xGroup->mpTopCell->aPos, xGroup, aCode))
-        {
-            SAL_INFO("sc.opencl", "interpreting group " << mxGroup->mpTopCell->aPos
-                << " (state " << static_cast<int>(mxGroup->meCalcState) << ") failed, disabling");
-            mxGroup->meCalcState = sc::GroupCalcDisabled;
-
-            // Undo the hack above
-            if (nNumParts > 1)
-            {
-                mxGroup->mpTopCell->aPos = aOrigPos;
-                xGroup->mpTopCell = nullptr;
-                mxGroup->mpCode = std::move(xGroup->mpCode);
-            }
-
-            aScope.addMessage("group interpretation unsuccessful");
-            return false;
-        }
-
-        aScope.setCalcComplete();
-
-        if (nNumParts > 1)
-        {
-            xGroup->mpTopCell = nullptr;
-            mxGroup->mpCode = std::move(xGroup->mpCode);
-        }
-    }
-
-    if (nNumParts > 1)
-        mxGroup->mpTopCell->aPos = aOrigPos;
-    mxGroup->meCalcState = sc::GroupCalcEnabled;
-    return true;
 }
 
 bool ScFormulaCell::InterpretInvariantFormulaGroup()

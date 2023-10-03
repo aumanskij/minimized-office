@@ -55,8 +55,6 @@ $(eval $(call gb_Library_use_libraries,scui,\
 	for \
 	forui \
 	i18nlangtag \
-	$(call gb_Helper_optional,OPENCL, \
-		opencl) \
 	sal \
 	sfx \
 	sot \

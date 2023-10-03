@@ -7,19 +7,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <config_feature_opencl.h>
 
 #include <formulagroup.hxx>
-#include <formulagroupcl.hxx>
 #include <document.hxx>
 #include <formulacell.hxx>
 #include <interpre.hxx>
 #include <globalnames.hxx>
 
 #include <officecfg/Office/Common.hxx>
-#if HAVE_FEATURE_OPENCL
-#include <opencl/platforminfo.hxx>
-#endif
 #include <sal/log.hxx>
 
 #include <cstdio>
@@ -27,9 +22,6 @@
 #include <unordered_map>
 #include <vector>
 
-#if HAVE_FEATURE_OPENCL
-#  include <opencl/openclwrapper.hxx>
-#endif
 
 namespace sc {
 
@@ -150,94 +142,11 @@ FormulaGroupInterpreter *FormulaGroupInterpreter::getStatic()
 {
     if ( !msInstance )
     {
-#if HAVE_FEATURE_OPENCL
-        if (ScCalcConfig::isOpenCLEnabled())
-        {
-            const ScCalcConfig& rConfig = ScInterpreter::GetGlobalConfig();
-            if( !switchOpenCLDevice(rConfig.maOpenCLDevice, rConfig.mbOpenCLAutoSelect))
-            {
-                if( ScCalcConfig::getForceCalculationType() == ForceCalculationOpenCL )
-                {
-                    SAL_WARN( "opencl", "OpenCL forced but failed to initialize" );
-                    abort();
-                }
-            }
-        }
-#endif
     }
 
     return msInstance;
 }
 
-#if HAVE_FEATURE_OPENCL
-void FormulaGroupInterpreter::fillOpenCLInfo(std::vector<OpenCLPlatformInfo>& rPlatforms)
-{
-    const std::vector<OpenCLPlatformInfo>& rPlatformsFromWrapper =
-        openclwrapper::fillOpenCLInfo();
-
-    rPlatforms.assign(rPlatformsFromWrapper.begin(), rPlatformsFromWrapper.end());
-}
-
-bool FormulaGroupInterpreter::switchOpenCLDevice(std::u16string_view rDeviceId, bool bAutoSelect, bool bForceEvaluation)
-{
-    bool bOpenCLEnabled = ScCalcConfig::isOpenCLEnabled();
-    if (!bOpenCLEnabled || (rDeviceId == u"" OPENCL_SOFTWARE_DEVICE_CONFIG_NAME))
-    {
-        delete msInstance;
-        msInstance = nullptr;
-        return false;
-    }
-
-    OUString aSelectedCLDeviceVersionID;
-    bool bSuccess = openclwrapper::switchOpenCLDevice(rDeviceId, bAutoSelect, bForceEvaluation, aSelectedCLDeviceVersionID);
-
-    if (!bSuccess)
-        return false;
-
-    delete msInstance;
-    msInstance = new sc::opencl::FormulaGroupInterpreterOpenCL();
-
-    return true;
-}
-
-void FormulaGroupInterpreter::getOpenCLDeviceInfo(sal_Int32& rDeviceId, sal_Int32& rPlatformId)
-{
-    rDeviceId = -1;
-    rPlatformId = -1;
-    bool bOpenCLEnabled = ScCalcConfig::isOpenCLEnabled();
-    if(!bOpenCLEnabled)
-        return;
-
-    size_t aDeviceId = static_cast<size_t>(-1);
-    size_t aPlatformId = static_cast<size_t>(-1);
-
-    openclwrapper::getOpenCLDeviceInfo(aDeviceId, aPlatformId);
-    rDeviceId = aDeviceId;
-    rPlatformId = aPlatformId;
-}
-
-void FormulaGroupInterpreter::enableOpenCL_UnitTestsOnly()
-{
-    std::shared_ptr<comphelper::ConfigurationChanges> batch(comphelper::ConfigurationChanges::create());
-    officecfg::Office::Common::Misc::UseOpenCL::set(true, batch);
-    batch->commit();
-
-    ScCalcConfig aConfig = ScInterpreter::GetGlobalConfig();
-
-    aConfig.mbOpenCLSubsetOnly = false;
-    aConfig.mnOpenCLMinimumFormulaGroupSize = 2;
-
-    ScInterpreter::SetGlobalConfig(aConfig);
-}
-
-void FormulaGroupInterpreter::disableOpenCL_UnitTestsOnly()
-{
-    std::shared_ptr<comphelper::ConfigurationChanges> batch(comphelper::ConfigurationChanges::create());
-    officecfg::Office::Common::Misc::UseOpenCL::set(false, batch);
-    batch->commit();
-}
-
-#endif
 
 } // namespace sc
 

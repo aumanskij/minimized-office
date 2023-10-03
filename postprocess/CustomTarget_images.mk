@@ -68,17 +68,14 @@ $(packimages_DIR)/images_%.zip : \
 # turn the #defines foo "resource.png" of hlst into the final ilst format
 $(packimages_DIR)/sourceimagelist.ilst : \
 		$(SRCDIR)/avmedia/inc/bitmaps.hlst \
-		$(SRCDIR)/basctl/inc/bitmaps.hlst \
 		$(SRCDIR)/connectivity/inc/bitmaps.hlst \
 		$(SRCDIR)/cui/inc/bitmaps.hlst \
 		$(SRCDIR)/chart2/inc/bitmaps.hlst \
-		$(SRCDIR)/dbaccess/inc/bitmaps.hlst \
 		$(SRCDIR)/desktop/inc/bitmaps.hlst \
 		$(SRCDIR)/extensions/inc/bitmaps.hlst \
 		$(SRCDIR)/formula/inc/bitmaps.hlst \
 		$(SRCDIR)/fpicker/inc/bitmaps.hlst \
 		$(SRCDIR)/framework/inc/bitmaps.hlst \
-		$(SRCDIR)/reportdesign/inc/bitmaps.hlst \
 		$(SRCDIR)/sc/inc/bitmaps.hlst \
 		$(SRCDIR)/sd/inc/bitmaps.hlst \
 		$(SRCDIR)/sdext/inc/bitmaps.hlst \

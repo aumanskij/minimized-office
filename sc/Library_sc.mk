@@ -78,8 +78,6 @@ $(eval $(call gb_Library_use_libraries,sc,\
     forui \
     i18nlangtag \
     i18nutil \
-    $(call gb_Helper_optional,OPENCL, \
-        opencl) \
     sal \
     salhelper \
     sax \
@@ -717,20 +715,6 @@ $(eval $(call gb_Library_add_exception_objects,sc,\
     sc/source/ui/view/gridwin_dbgutil \
 ))
 endif
-
-$(eval $(call gb_Helper_optional,OPENCL,\
-$(call gb_Library_add_exception_objects,sc,\
-    sc/source/core/opencl/formulagroupcl \
-    sc/source/core/opencl/opbase \
-    sc/source/core/opencl/op_financial \
-    sc/source/core/opencl/op_math \
-    sc/source/core/opencl/op_addin \
-    sc/source/core/opencl/op_statistical \
-    sc/source/core/opencl/op_array \
-    sc/source/core/opencl/op_logical \
-    sc/source/core/opencl/op_spreadsheet \
-    sc/source/core/opencl/utils \
-)))
 
 ifeq ($(OS),LINUX)
 $(eval $(call gb_Library_add_libs,sc,\

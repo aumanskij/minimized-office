@@ -35,12 +35,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 ))
 endif
 
-ifneq ($(ENABLE_WASM_STRIP_DBACCESS),TRUE)
-$(eval $(call gb_Module_add_moduledirs,libreoffice,\
-	dbaccess \
-))
-endif
-
 ifneq ($(ENABLE_WASM_STRIP_ACCESSIBILITY),TRUE)
 $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	accessibility \
@@ -49,18 +43,12 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 endif
 
 $(eval $(call gb_Module_add_moduledirs,libreoffice,\
-	android \
     $(if $(ENABLE_WASM_STRIP_BASIC_DRAW_MATH_IMPRESS),, \
 	animations \
     ) \
-	apple_remote \
 	avmedia \
-	$(if $(ENABLE_WASM_STRIP_CALC),, \
-	basctl \
-	) \
 	basegfx \
 	basic \
-	bean \
 	binaryurp \
 	bridges \
 	cli_ure \
@@ -90,22 +78,16 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	framework \
     $(call gb_Helper_optionals_or,HELPTOOLS XMLHELP,helpcompiler) \
 	$(call gb_Helper_optional,HELP,helpcontent2) \
-	hwpfilter \
 	i18nlangtag \
 	i18npool \
 	i18nutil \
 	idl \
 	instsetoo_native \
 	io \
-	javaunohelper \
-	jurt \
-	jvmaccess \
-	jvmfwk \
 	$(call gb_Helper_optional,LIBRELOGO,librelogo) \
 	libreofficekit \
 	lingucomponent \
 	linguistic \
-	lotuswordpro \
 	$(call gb_Helper_optional,DESKTOP,l10ntools) \
 	$(call gb_Helper_optional,NLPSOLVER,nlpsolver) \
 	o3tl \
@@ -124,8 +106,6 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	registry \
 	remotebridges \
 	reportbuilder \
-	$(call gb_Helper_optional,DBCONNECTIVITY,reportdesign) \
-	ridljar \
 	sal \
 	salhelper \
 	sax \
@@ -183,9 +163,7 @@ $(eval $(call gb_Module_add_moduledirs,libreoffice,\
 	unoxml \
 	ure \
 	uui \
-	vbahelper \
 	vcl \
-	wizards \
 	writerfilter \
 	writerperfect \
 	xmerge \

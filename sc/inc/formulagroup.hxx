@@ -9,16 +9,12 @@
 
 #pragma once
 
-#include <config_feature_opencl.h>
 
 #include "address.hxx"
 #include "calcconfig.hxx"
 #include "types.hxx"
 #include "stlalgorithm.hxx"
 
-#if HAVE_FEATURE_OPENCL
-#include <opencl/platforminfo.hxx>
-#endif
 
 #include <memory>
 #include <unordered_map>
@@ -133,14 +129,6 @@ protected:
 
 public:
     static FormulaGroupInterpreter *getStatic();
-#if HAVE_FEATURE_OPENCL
-    static void fillOpenCLInfo(std::vector<OpenCLPlatformInfo>& rPlatforms);
-    static bool switchOpenCLDevice(std::u16string_view rDeviceId, bool bAutoSelect, bool bForceEvaluation = false);
-    // This is intended to be called from opencl-test.cxx only
-    static void enableOpenCL_UnitTestsOnly();
-    static void disableOpenCL_UnitTestsOnly();
-    static void getOpenCLDeviceInfo(sal_Int32& rDeviceId, sal_Int32& rPlatformId);
-#endif
     virtual ScMatrixRef inverseMatrix(const ScMatrix& rMat) = 0;
     virtual bool interpret(ScDocument& rDoc, const ScAddress& rTopPos, ScFormulaCellGroupRef& xGroup, ScTokenArray& rCode) = 0;
 };

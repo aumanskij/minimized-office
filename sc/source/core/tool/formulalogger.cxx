@@ -208,16 +208,6 @@ void FormulaLogger::GroupScope::addRefMessage(
     mpImpl->maMessages.push_back(aPosStr + ": " + aMsg);
 }
 
-void FormulaLogger::GroupScope::addGroupSizeThresholdMessage( const ScFormulaCell& rCell )
-{
-    OUString aBuf = "group length below minimum threshold ("
-        + OUString::number(rCell.GetWeight())
-        + " < "
-        + OUString::number(ScInterpreter::GetGlobalConfig().mnOpenCLMinimumFormulaGroupSize)
-        + ")";
-    mpImpl->maMessages.push_back(aBuf);
-}
-
 void FormulaLogger::GroupScope::setCalcComplete()
 {
     mpImpl->mbCalcComplete = true;
@@ -260,8 +250,7 @@ FormulaLogger::FormulaLogger()
 
     // Output the header information.
     writeAscii("---\n");
-    writeAscii("OpenCL: ");
-    writeAscii(ScCalcConfig::isOpenCLEnabled() ? "enabled\n" : "disabled\n");
+    writeAscii("OpenCL: disabled forever\n");
     writeAscii("---\n");
 
     sync();

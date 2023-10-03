@@ -81,7 +81,6 @@
 #include <displayconnectiondispatch.hxx>
 
 #include <config_features.h>
-#include <config_feature_opencl.h>
 
 #include <osl/process.h>
 #include <com/sun/star/lang/XComponent.hpp>
@@ -95,7 +94,6 @@
 #include <cppuhelper/implbase.hxx>
 #include <uno/current_context.hxx>
 
-#include <opencl/OpenCLZone.hxx>
 #include <opengl/zone.hxx>
 #include <skia/zone.hxx>
 #include <watchdog.hxx>
@@ -140,16 +138,6 @@ static oslSignalAction VCLExceptionSignal_impl( void* /*pData*/, oslSignalInfo* 
 #if HAVE_FEATURE_SKIA
         if (SkiaZone::isInZone())
             SkiaZone::hardDisable();
-#endif
-#if HAVE_FEATURE_OPENCL
-        if (OpenCLZone::isInZone())
-        {
-            OpenCLZone::hardDisable();
-#ifdef _WIN32
-            if (OpenCLInitialZone::isInZone())
-                TerminateProcess(GetCurrentProcess(), EXITHELPER_NORMAL_RESTART);
-#endif
-        }
 #endif
     }
 

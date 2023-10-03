@@ -930,7 +930,7 @@ endif # gb_FULLDEPS
 # declared. In a full build exclusively in gbuild that should never happen.
 define gb_LinkTarget__get_headers_check
 ifneq ($$(SELF),$$*)
-$$(eval $$(call gb_Output_error,used LinkTarget $$* not defined))
+$$(eval $$(call gb_Output_error,used LinkTarget $$* not defined (called from $$(SELF))) )
 endif
 $$@ : COMMAND := $$(call gb_Helper_abbreviate_dirs, touch $$@)
 

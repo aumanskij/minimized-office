@@ -55,7 +55,6 @@ class SAL_WARN_UNUSED SC_DLLPUBLIC ScTokenArray final : public formula::FormulaT
     rtl::Reference<ScSheetLimits> mxSheetLimits;
     size_t mnHashValue;
     ScFormulaVectorState meVectorState : 4; // Only 4 bits
-    bool mbOpenCLEnabled : 1;
     bool mbThreadingEnabled : 1;
 
     void CheckForThreading( const formula::FormulaToken& r );
@@ -265,7 +264,6 @@ public:
 
     sal_Int32 GetWeight() const;
 
-    bool IsEnabledForOpenCL() const { return mbOpenCLEnabled; }
     bool IsEnabledForThreading() const { return mbThreadingEnabled; }
 
 #if DEBUG_FORMULA_COMPILER

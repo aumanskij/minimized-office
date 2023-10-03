@@ -39,11 +39,6 @@ static ForceCalculationType forceCalculationTypeInit()
     const char* env = getenv( "SC_FORCE_CALCULATION" );
     if( env != nullptr )
     {
-        if( strcmp( env, "opencl" ) == 0 )
-        {
-            SAL_INFO("sc.core.formulagroup", "Forcing calculations to use OpenCL");
-            return ForceCalculationOpenCL;
-        }
         if( strcmp( env, "threads" ) == 0 )
         {
             SAL_INFO("sc.core.formulagroup", "Forcing calculations to use threads");
@@ -66,17 +61,6 @@ ForceCalculationType ScCalcConfig::getForceCalculationType()
     return type;
 }
 
-bool ScCalcConfig::isOpenCLEnabled()
-{
-    if (utl::ConfigManager::IsFuzzing())
-        return false;
-    static ForceCalculationType force = getForceCalculationType();
-    if( force != ForceCalculationNone )
-        return force == ForceCalculationOpenCL;
-    static comphelper::ConfigurationListenerProperty<bool> gOpenCLEnabled(getMiscListener(), "UseOpenCL");
-    return gOpenCLEnabled.get();
-}
-
 bool ScCalcConfig::isThreadingEnabled()
 {
     if (utl::ConfigManager::IsFuzzing())
@@ -94,55 +78,6 @@ ScCalcConfig::ScCalcConfig() :
     mbEmptyStringAsZero(false),
     mbHasStringRefSyntax(false)
 {
-    setOpenCLConfigToDefault();
-}
-
-void ScCalcConfig::setOpenCLConfigToDefault()
-{
-    // Keep in order of opcode value, is that clearest? (Random order,
-    // at least, would make no sense at all.)
-    static const OpCodeSet pDefaultOpenCLSubsetOpCodes(new o3tl::sorted_vector<OpCode>({
-        ocAdd,
-        ocSub,
-        ocNegSub,
-        ocMul,
-        ocDiv,
-        ocPow,
-        ocRandom,
-        ocSin,
-        ocCos,
-        ocTan,
-        ocArcTan,
-        ocExp,
-        ocLn,
-        ocSqrt,
-        ocStdNormDist,
-        ocSNormInv,
-        ocRound,
-        ocPower,
-        ocSumProduct,
-        ocMin,
-        ocMax,
-        ocSum,
-        ocProduct,
-        ocAverage,
-        ocCount,
-        ocVar,
-        ocNormDist,
-        ocVLookup,
-        ocCorrel,
-        ocCovar,
-        ocPearson,
-        ocSlope,
-        ocSumIfs}));
-
-    // Note that these defaults better be kept in sync with those in
-    // officecfg/registry/schema/org/openoffice/Office/Calc.xcs.
-    // Crazy.
-    mbOpenCLSubsetOnly = true;
-    mbOpenCLAutoSelect = true;
-    mnOpenCLMinimumFormulaGroupSize = 100;
-    mpOpenCLSubsetOpCodes = pDefaultOpenCLSubsetOpCodes;
 }
 
 void ScCalcConfig::reset()
@@ -171,12 +106,7 @@ bool ScCalcConfig::operator== (const ScCalcConfig& r) const
     return meStringRefAddressSyntax == r.meStringRefAddressSyntax &&
            meStringConversion == r.meStringConversion &&
            mbEmptyStringAsZero == r.mbEmptyStringAsZero &&
-           mbHasStringRefSyntax == r.mbHasStringRefSyntax &&
-           mbOpenCLSubsetOnly == r.mbOpenCLSubsetOnly &&
-           mbOpenCLAutoSelect == r.mbOpenCLAutoSelect &&
-           maOpenCLDevice == r.maOpenCLDevice &&
-           mnOpenCLMinimumFormulaGroupSize == r.mnOpenCLMinimumFormulaGroupSize &&
-           *mpOpenCLSubsetOpCodes == *r.mpOpenCLSubsetOpCodes;
+           mbHasStringRefSyntax == r.mbHasStringRefSyntax;
 }
 
 bool ScCalcConfig::operator!= (const ScCalcConfig& r) const
@@ -225,8 +155,6 @@ ScCalcConfig::OpCodeSet ScStringToOpCodeSet(std::u16string_view rOpCodes)
                 auto opcode(rHashMap.find(element));
                 if (opcode != rHashMap.end())
                     result->insert(opcode->second);
-                else
-                    SAL_WARN("sc.opencl", "Unrecognized OpCode " << element << " in OpCode set string");
             }
         }
         fromIndex = semicolon+1;
