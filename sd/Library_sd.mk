@@ -98,7 +98,6 @@ $(eval $(call gb_Library_use_libraries,sd,\
 	ucbhelper \
 	utl \
 	vcl \
-	$(if $(ENABLE_NSS),xmlsecurity) \
 ))
 
 $(eval $(call gb_Library_use_externals,sd,\
