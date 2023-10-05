@@ -878,7 +878,7 @@ disable_database_connectivity_dependencies()
 # changed after the "End initial platform setup" block.
 # This is also true for most test_* variables.
 # ===================================================================
-build_crypto=yes
+build_crypto=no
 test_clucene=no
 test_gdb_index=no
 test_openldap=yes
@@ -9538,11 +9538,6 @@ dnl Check for system expat
 dnl ===================================================================
 libo_CHECK_SYSTEM_MODULE([expat], [EXPAT], [expat])
 
-dnl ===================================================================
-dnl Check for system xmlsec
-dnl ===================================================================
-libo_CHECK_SYSTEM_MODULE([xmlsec], [XMLSEC], [xmlsec1-nss >= 1.2.35])
-
 AC_MSG_CHECKING([whether to enable Embedded OpenType support])
 if test "$enable_eot" = "yes"; then
     ENABLE_EOT="TRUE"
@@ -10720,11 +10715,6 @@ nss - Mozilla's Network Security Services (NSS)
     ])
         ;;
     esac
-else
-    # default to using NSS, it results in smaller oox lib
-    AC_DEFINE(USE_TLS_NSS)
-    TLS=NSS
-    AC_MSG_RESULT([$TLS])
 fi
 AC_SUBST(TLS)
 
