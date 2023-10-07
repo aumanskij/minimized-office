@@ -108,7 +108,6 @@ $(WORKDIR)/download: $(BUILDDIR)/config_$(gb_Side).mk $(SRCDIR)/download.lst $(S
 		$(call fetch_Optional,BZIP2,BZIP2_TARBALL) \
 		$(call fetch_Optional,CAIRO,CAIRO_TARBALL) \
 		$(call fetch_Optional,CAIRO,PIXMAN_TARBALL) \
-		$(call fetch_Optional,CDR,CDR_TARBALL) \
 		$(call fetch_Optional,CLUCENE,CLUCENE_TARBALL) \
 		$(call fetch_Optional,DRAGONBOX,DRAGONBOX_TARBALL) \
 		DTOA_TARBALL \
@@ -116,7 +115,6 @@ $(WORKDIR)/download: $(BUILDDIR)/config_$(gb_Side).mk $(SRCDIR)/download.lst $(S
 		$(call fetch_Optional,COINMP,COINMP_TARBALL) \
 		$(call fetch_Optional,CPPUNIT,CPPUNIT_TARBALL) \
 		$(call fetch_Optional,CURL,CURL_TARBALL) \
-		$(call fetch_Optional,EBOOK,EBOOK_TARBALL) \
 		$(call fetch_Optional,EPM,EPM_TARBALL) \
 		$(call fetch_Optional,ETONYEK,ETONYEK_TARBALL) \
 		$(call fetch_Optional,EXPAT,EXPAT_TARBALL) \
@@ -185,8 +183,6 @@ $(WORKDIR)/download: $(BUILDDIR)/config_$(gb_Side).mk $(SRCDIR)/download.lst $(S
 		$(call fetch_Optional,MORE_FONTS,FONT_AMIRI_TARBALL) \
 		$(call fetch_Optional,MORE_FONTS,FONT_REEM_TARBALL) \
 		$(call fetch_Optional,MORE_FONTS,FONT_SCHEHERAZADE_TARBALL) \
-		$(call fetch_Optional,MSPUB,MSPUB_TARBALL) \
-		$(call fetch_Optional,MWAW,MWAW_TARBALL) \
 		$(call fetch_Optional,MYTHES,MYTHES_TARBALL) \
 		$(call fetch_Optional,NSS,NSS_TARBALL) \
 		$(call fetch_Optional_pack,NUMBERTEXT_EXTENSION_PACK) \
@@ -194,13 +190,11 @@ $(WORKDIR)/download: $(BUILDDIR)/config_$(gb_Side).mk $(SRCDIR)/download.lst $(S
 		$(call fetch_Optional,OPENLDAP,OPENLDAP_TARBALL) \
 		$(call fetch_Optional,OPENSSL,OPENSSL_TARBALL) \
 		$(call fetch_Optional,ORCUS,ORCUS_TARBALL) \
-		$(call fetch_Optional,PAGEMAKER,PAGEMAKER_TARBALL) \
 		$(call fetch_Optional,PDFIUM,PDFIUM_TARBALL) \
 		$(call fetch_Optional,POPPLER,POPPLER_TARBALL) \
 		$(call fetch_Optional,POPPLER,POPPLER_DATA_TARBALL) \
 		$(call fetch_Optional,POSTGRESQL,POSTGRESQL_TARBALL) \
 		$(call fetch_Optional,PYTHON,PYTHON_TARBALL) \
-		$(call fetch_Optional,QXP,QXP_TARBALL) \
 		$(call fetch_Optional,REDLAND,RAPTOR_TARBALL) \
 		$(call fetch_Optional,REDLAND,RASQAL_TARBALL) \
 		$(call fetch_Optional,REDLAND,REDLAND_TARBALL) \
@@ -208,12 +202,8 @@ $(WORKDIR)/download: $(BUILDDIR)/config_$(gb_Side).mk $(SRCDIR)/download.lst $(S
 		$(call fetch_Optional,RHINO,RHINO_TARBALL) \
 		$(call fetch_Optional,RHINO,SWING_TARBALL) \
 		$(call fetch_Optional,SKIA,SKIA_TARBALL) \
-		$(call fetch_Optional,STAROFFICE,STAROFFICE_TARBALL) \
 		$(if $(filter WNT,$(OS)),TWAIN_DSM_TARBALL) \
 		$(call fetch_Optional,VISIO,VISIO_TARBALL) \
-		$(call fetch_Optional,WPD,WPD_TARBALL) \
-		$(call fetch_Optional,WPG,WPG_TARBALL) \
-		$(call fetch_Optional,WPS,WPS_TARBALL) \
 		$(call fetch_Optional,XSLTML,XSLTML_TARBALL) \
 		$(call fetch_Optional,ZLIB,ZLIB_TARBALL) \
 	,$(call fetch_Download_item,https://dev-www.libreoffice.org/src,$(item)))

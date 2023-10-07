@@ -299,23 +299,8 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_database_types.x
 	StarBase \
 ))
 
-$(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_database_filters.xcu,filter/source/config/fragments/filters,\
-	StarOffice_XML__Base_ \
-))
-
 $(eval $(call filter_Configuration_add_others,fcfg_langpack,fcfg_database_others.xcu,filter/source/config/fragments,\
 	frameloaders/org_openoffice_comp_dbflt_DBContentLoader2 \
-))
-
-# fcfg_reportbuilder
-$(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_reportbuilder_types.xcu,filter/source/config/fragments/types,\
-	StarBaseReport \
-	StarBaseReportChart \
-))
-
-$(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_reportbuilder_filters.xcu,filter/source/config/fragments/filters,\
-	StarBaseReport \
-	StarBaseReportChart \
 ))
 
 # fcfg_writer
@@ -333,22 +318,14 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_writer_types.xcu
 	writer_ODT_FlatXML \
 	writer_Rich_Text_Format \
 	writer_StarOffice_XML_Writer \
-	writer_WordPerfect_Document \
 	writer_MS_Works_Document \
 	writer_MS_Write \
 	writer_DosWord \
-	writer_ClarisWorks \
-	writer_Mac_Word \
-	writer_Mac_Works \
-	writer_MacWrite \
-	writer_Mariner_Write \
-	writer_WriteNow \
 	writer_AbiWord_Document \
 	writer_T602_Document \
 	writer_LotusWordPro_Document \
 	generic_Text \
 	writer_MIZI_Hwp_97 \
-	writer_StarOffice_XML_Writer_Template \
 	pdf_Portable_Document_Format \
 	writer8_template \
 	writer8 \
@@ -359,14 +336,7 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_writer_types.xcu
 	writer_OOXML_Template \
 	writer_layout_dump_xml \
 	writer_indexing_export_xml \
-	writer_BroadBand_eBook \
-	writer_FictionBook_2 \
-	writer_PalmDoc \
-	writer_Plucker_eBook \
 	writer_ApplePages \
-	MWAW_Text_Document \
-	Palm_Text_Document \
-	StarOffice_Writer \
 	writer_PocketWord_File \
 ))
 
@@ -380,24 +350,15 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_writer_filters
 	MS_Word_97_Vorlage \
 	ODT_FlatXML \
 	Rich_Text_Format \
-	StarOffice_XML__Writer_ \
-	WordPerfect \
 	MS_Works \
 	MS_Write \
 	DosWord \
-	ClarisWorks \
-	Mac_Word \
-	Mac_Works \
-	MacWrite \
-	Mariner_Write \
-	WriteNow \
 	AbiWord \
 	T602Document \
 	LotusWordPro \
 	Text \
 	Text__encoded_ \
 	writer_MIZI_Hwp_97 \
-	writer_StarOffice_XML_Writer_Template \
 	writer_pdf_Export\
 	writer8\
 	writer8_template \
@@ -408,14 +369,7 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_writer_filters
 	OOXML_Text_Template \
 	writer_layout_dump \
 	writer_indexing_export \
-	BroadBand_eBook \
-	FictionBook_2 \
-	PalmDoc \
-	Plucker_eBook \
 	ApplePages \
-	MWAW_Text_Document \
-	Palm_Text_Document \
-	StarOffice_Writer \
 	PocketWord_File \
 ))
 
@@ -425,7 +379,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_web_types.xcu,fi
 	generic_Text \
 	writer_web_HTML_help \
 	writer_StarOffice_XML_Writer \
-	writer_web_StarOffice_XML_Writer_Web_Template \
 	pdf_Portable_Document_Format \
 	writerweb8_writer_template \
 ))
@@ -435,8 +388,6 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_web_filters.xc
 	Text__StarWriter_Web_ \
 	Text__encoded___StarWriter_Web_ \
 	writer_web_HTML_help \
-	writer_web_StarOffice_XML_Writer \
-	writer_web_StarOffice_XML_Writer_Web_Template \
 	writer_web_pdf_Export\
 	writer_web_png_Export\
 	writer_web_jpg_Export\
@@ -449,7 +400,6 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_web_filters.xc
 $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_global_types.xcu,filter/source/config/fragments/types,\
 	generic_Text \
 	writer_StarOffice_XML_Writer \
-	writer_globaldocument_StarOffice_XML_Writer_GlobalDocument \
 	pdf_Portable_Document_Format \
 	writerglobal8 \
 	writerglobal8_template \
@@ -457,8 +407,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_global_types.xcu
 
 $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_global_filters.xcu,filter/source/config/fragments/filters,\
 	Text__encoded___StarWriter_GlobalDocument_ \
-	writer_globaldocument_StarOffice_XML_Writer \
-	writer_globaldocument_StarOffice_XML_Writer_GlobalDocument \
 	writer_globaldocument_pdf_Export \
 	writerglobal8 \
 	writerglobal8_template \
@@ -487,7 +435,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_calc_types.xcu,f
 	writer_Rich_Text_Format \
 	calc_SYLK \
 	calc_StarOffice_XML_Calc \
-	calc_StarOffice_XML_Calc_Template \
 	pdf_Portable_Document_Format \
 	calc_dBase\
 	calc8 \
@@ -501,13 +448,8 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_calc_types.xcu,f
 	calc_MS_Works_Document \
 	calc_WPS_Lotus_Document \
 	calc_WPS_QPro_Document \
-	calc_ClarisWorks \
 	calc_Claris_Resolve \
-	calc_Mac_Works \
 	calc_AppleNumbers \
-	MWAW_Database \
-	MWAW_Spreadsheet \
-	StarOffice_Spreadsheet \
 	calc_MS_Multiplan \
 ))
 
@@ -528,10 +470,8 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_calc_filters.x
 	MS_Excel_2003_XML_Orcus \
 	Rich_Text_Format__StarCalc_ \
 	SYLK \
-	StarOffice_XML__Calc_ \
 	Text___txt___csv__StarCalc_ \
 	calc_HTML_WebQuery \
-	calc_StarOffice_XML_Calc_Template \
 	calc_pdf_Export \
 	dBase \
 	calc8 \
@@ -546,13 +486,7 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_calc_filters.x
 	MS_Works_Calc \
 	WPS_Lotus_Calc \
 	WPS_QPro_Calc \
-	ClarisWorks_Calc \
-	Claris_Resolve_Calc \
-	Mac_Works_Calc \
 	AppleNumbers \
-	MWAW_Database \
-	MWAW_Spreadsheet \
-	StarOffice_Spreadsheet \
 	MS_Multiplan \
 ))
 
@@ -560,44 +494,26 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_calc_filters.x
 $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_draw_types.xcu,filter/source/config/fragments/types,\
 	draw_ODG_FlatXML \
 	draw_StarOffice_XML_Draw \
-	draw_StarOffice_XML_Draw_Template \
 	pdf_Portable_Document_Format \
 	draw8 \
 	draw8_template \
-	draw_WordPerfect_Graphics \
 	draw_Visio_Document \
-	draw_Publisher_Document \
 	draw_CorelDraw_Document \
 	draw_Corel_Presentation_Exchange \
 	draw_Freehand_Document \
 	draw_Visio_Document \
-	draw_ClarisWorks \
 	draw_PageMaker_Document \
 	draw_QXP_Document \
-	MWAW_Bitmap \
-	MWAW_Drawing \
-	StarOffice_Drawing \
 ))
 
 $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_draw_filters.xcu,filter/source/config/fragments/filters,\
 	ODG_FlatXML \
-	StarOffice_XML__Draw_ \
-	draw_StarOffice_XML_Draw_Template \
 	draw_pdf_Export \
 	draw8 \
 	draw8_template \
-	WordPerfectGraphics \
 	VisioDocument \
-	PublisherDocument \
-	CorelDrawDocument \
 	CorelPresentationExchange \
-	FreehandDocument \
-	ClarisWorks_Draw \
-	PageMakerDocument \
 	QXPDocument \
-	MWAW_Bitmap \
-	MWAW_Drawing \
-	StarOffice_Drawing \
 ))
 
 # fcfg_impress
@@ -608,7 +524,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_impress_types.xc
 	impress_MS_PowerPoint_97_Vorlage \
 	impress_ODP_FlatXML \
 	impress_StarOffice_XML_Impress \
-	impress_StarOffice_XML_Impress_Template \
 	pdf_Portable_Document_Format \
 	impress8 \
 	impress8_template \
@@ -620,20 +535,13 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_impress_types.xc
 	impress_OOXML_Presentation \
 	impress_OOXML_Presentation_Template \
 	impress_OOXML_Presentation_AutoPlay \
-	impress_ClarisWorks \
-	StarOffice_Presentation \
-	MWAW_Presentation \
-	impress_PowerPoint3 \
 ))
 
 $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_impress_filters.xcu,filter/source/config/fragments/filters,\
 	MS_PowerPoint_97 \
 	MS_PowerPoint_97_AutoPlay \
 	MS_PowerPoint_97_Vorlage \
-	impress_StarOffice_XML_Draw \
 	ODP_FlatXML \
-	StarOffice_XML__Impress_ \
-	impress_StarOffice_XML_Impress_Template \
 	impress_pdf_Export \
 	impress8 \
 	impress8_template \
@@ -645,10 +553,6 @@ $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_impress_filter
 	impress_OOXML \
 	impress_OOXML_Template \
 	impress_OOXML_AutoPlay \
-	ClarisWorks_Impress \
-	StarOffice_Presentation \
-	MWAW_Presentation \
-	PowerPoint3 \
 ))
 
 # fcfg_chart
@@ -658,7 +562,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_chart_types.xcu,
 ))
 
 $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_chart_filters.xcu,filter/source/config/fragments/filters,\
-	StarOffice_XML__Chart_ \
 	chart8 \
 ))
 
@@ -678,7 +581,6 @@ $(eval $(call filter_Configuration_add_types,fcfg_langpack,fcfg_math_types.xcu,f
 $(eval $(call filter_Configuration_add_filters,fcfg_langpack,fcfg_math_filters.xcu,filter/source/config/fragments/filters,\
 	MathML_XML__Math_ \
 	MathType_3_x \
-	StarOffice_XML__Math_ \
 	math_pdf_Export \
 	math8 \
 ))

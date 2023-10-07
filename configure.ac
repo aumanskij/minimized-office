@@ -3084,7 +3084,6 @@ if test "$enable_wasm_strip" = "yes"; then
     test_libfreehand=no
     test_libmspub=no
     test_libpagemaker=no
-    test_libqxp=no
     test_libvisio=no
     test_webdav=no
     with_galleries=no
@@ -4603,11 +4602,6 @@ if test -n "$enable_dbgutil" -a "$enable_dbgutil" != "no"; then
         AC_MSG_ERROR([--with-system-libnumbertext conflicts with --enable-dbgutil])
     else
         with_system_libnumbertext=no
-    fi
-    if test "$with_system_libwps" = "yes"; then
-        AC_MSG_ERROR([--with-system-libwps conflicts with --enable-dbgutil])
-    else
-        with_system_libwps=no
     fi
 else
     ENABLE_DBGUTIL=""
@@ -9564,41 +9558,11 @@ libo_CHECK_SYSTEM_MODULE([librevenge],[REVENGE],[librevenge-0.0 >= 0.0.1])
 
 libo_CHECK_SYSTEM_MODULE([libodfgen],[ODFGEN],[libodfgen-0.1])
 
-WPD_CFLAGS_internal="-I${WORKDIR}/UnpackedTarball/libwpd/inc"
-AS_IF([test "$COM" = "MSC"],
-      [libwpd_libdir="${WORKDIR}/LinkTarget/Library"],
-      [libwpd_libdir="${WORKDIR}/UnpackedTarball/libwpd/src/lib/.libs"]
-)
-WPD_LIBS_internal="-L${libwpd_libdir} -lwpd-0.10"
-libo_CHECK_SYSTEM_MODULE([libwpd],[WPD],[libwpd-0.10])
-
-libo_CHECK_SYSTEM_MODULE([libwpg],[WPG],[libwpg-0.3])
-
-libo_CHECK_SYSTEM_MODULE([libwps],[WPS],[libwps-0.4])
-libo_PKG_VERSION([WPS], [libwps-0.4], [0.4.12])
-
 libo_CHECK_SYSTEM_MODULE([libvisio],[VISIO],[libvisio-0.1])
-
-libo_CHECK_SYSTEM_MODULE([libcdr],[CDR],[libcdr-0.1])
 
 libo_CHECK_SYSTEM_MODULE([libmspub],[MSPUB],[libmspub-0.1])
 
-libo_CHECK_SYSTEM_MODULE([libmwaw],[MWAW],[libmwaw-0.3 >= 0.3.21])
-libo_PKG_VERSION([MWAW], [libmwaw-0.3], [0.3.21])
-
-libo_CHECK_SYSTEM_MODULE([libfreehand],[FREEHAND],[libfreehand-0.1])
-
-libo_CHECK_SYSTEM_MODULE([libebook],[EBOOK],[libe-book-0.1])
-libo_PKG_VERSION([EBOOK], [libe-book-0.1], [0.1.2])
-
 libo_CHECK_SYSTEM_MODULE([libabw],[ABW],[libabw-0.1])
-
-libo_CHECK_SYSTEM_MODULE([libpagemaker],[PAGEMAKER],[libpagemaker-0.0])
-
-libo_CHECK_SYSTEM_MODULE([libqxp],[QXP],[libqxp-0.0])
-
-libo_CHECK_SYSTEM_MODULE([libstaroffice],[STAROFFICE],[libstaroffice-0.0])
-libo_PKG_VERSION([STAROFFICE], [libstaroffice-0.0], [0.0.7])
 
 dnl ===================================================================
 dnl Check for system lcms2

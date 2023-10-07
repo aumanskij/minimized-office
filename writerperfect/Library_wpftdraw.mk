@@ -46,19 +46,10 @@ $(eval $(call gb_Library_use_libraries,wpftdraw,\
 
 $(eval $(call gb_Library_use_externals,wpftdraw,\
 	boost_headers \
-	cdr \
-	freehand \
-	mspub \
-	mwaw \
 	odfgen \
 	libpng \
-	pagemaker \
-	qxp \
 	revenge \
-	staroffice \
 	visio \
-	wpg \
-	wpd \
 	zlib \
 	lcms2 \
 	libxml2 \
@@ -68,16 +59,7 @@ $(eval $(call gb_Library_use_externals,wpftdraw,\
 ))
 
 $(eval $(call gb_Library_add_exception_objects,wpftdraw,\
-	writerperfect/source/draw/CDRImportFilter \
-	writerperfect/source/draw/CMXImportFilter \
-	writerperfect/source/draw/FreehandImportFilter \
-	writerperfect/source/draw/MSPUBImportFilter \
-	writerperfect/source/draw/MWAWDrawImportFilter \
-	writerperfect/source/draw/PageMakerImportFilter \
-	writerperfect/source/draw/QXPImportFilter \
-	writerperfect/source/draw/StarOfficeDrawImportFilter \
 	writerperfect/source/draw/VisioImportFilter \
-	writerperfect/source/draw/WPGImportFilter \
 ))
 
 # vim: set noet sw=4 ts=4:

@@ -31,13 +31,11 @@ $(eval $(call gb_Module_add_moduledirs,external,\
 	$(call gb_Helper_optional,CURL,curl) \
 	$(call gb_Helper_optional,DRAGONBOX,dragonbox) \
 	dtoa \
-	$(call gb_Helper_optional,EBOOK,libebook) \
 	$(call gb_Helper_optional,EPM,epm) \
 	$(call gb_Helper_optional,EPOXY,epoxy) \
 	$(call gb_Helper_optional,EXPAT,expat) \
 	$(call gb_Helper_optional,FIREBIRD,firebird) \
 	$(call gb_Helper_optional,FONTCONFIG,fontconfig) \
-	$(call gb_Helper_optional,FREEHAND,libfreehand) \
 	$(call gb_Helper_optional,FREETYPE,freetype) \
 	$(call gb_Helper_optional,FROZEN,frozen) \
 	$(call gb_Helper_optional,GLM,glm) \
@@ -73,31 +71,23 @@ $(eval $(call gb_Module_add_moduledirs,external,\
 	$(call gb_Helper_optional,MDNSRESPONDER,mdnsresponder) \
 	$(if $(WITH_EXTRA_EXTENSIONS),misc_extensions) \
 	$(call gb_Helper_optional,MORE_FONTS,more_fonts) \
-	$(call gb_Helper_optional,MSPUB,libmspub) \
-	$(call gb_Helper_optional,MWAW,libmwaw) \
 	$(call gb_Helper_optional,MYTHES,mythes) \
 	$(call gb_Helper_optional,NSS,nss) \
 	$(call gb_Helper_optional,ODFGEN,libodfgen) \
 	$(call gb_Helper_optional,OPENLDAP,openldap) \
 	$(call gb_Helper_optional,OPENSSL,openssl) \
 	$(call gb_Helper_optional,ORCUS,liborcus) \
-	$(call gb_Helper_optional,PAGEMAKER,libpagemaker) \
 	$(call gb_Helper_optional,PDFIUM,pdfium) \
 	$(call gb_Helper_optional,POPPLER,poppler) \
 	$(call gb_Helper_optional,POSTGRESQL,postgresql) \
 	$(call gb_Helper_optional,PYTHON,python3) \
-	$(call gb_Helper_optional,QXP,libqxp) \
 	$(call gb_Helper_optional,ZXING,zxing) \
 	$(call gb_Helper_optional,REDLAND,redland) \
 	$(call gb_Helper_optional,REVENGE,librevenge) \
 	$(call gb_Helper_optional,RHINO,rhino) \
 	$(call gb_Helper_optional,SKIA,skia) \
-	$(call gb_Helper_optional,STAROFFICE,libstaroffice) \
 	$(if $(filter WNT,$(OS)),twain_dsm) \
 	$(call gb_Helper_optional,VISIO,libvisio) \
-	$(call gb_Helper_optional,WPD,libwpd) \
-	$(call gb_Helper_optional,WPG,libwpg) \
-	$(call gb_Helper_optional,WPS,libwps) \
 	$(call gb_Helper_optional,XSLTML,xsltml) \
 	$(call gb_Helper_optional,ZLIB,zlib) \
 ))

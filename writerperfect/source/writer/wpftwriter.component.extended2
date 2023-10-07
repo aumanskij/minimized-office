@@ -5,8 +5,3 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 com.sun.star.comp.Writer.AbiWordImportFilter
-com.sun.star.comp.Writer.MSWorksImportFilter
-com.sun.star.comp.Writer.MWAWImportFilter
-com.sun.star.comp.Writer.WordPerfectImportFilter
-org.libreoffice.comp.Writer.EBookImportFilter
-org.libreoffice.comp.Writer.PagesImportFilter

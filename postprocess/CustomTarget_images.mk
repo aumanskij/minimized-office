@@ -16,7 +16,6 @@ $(eval $(call gb_CustomTarget_register_targets,postprocess/images,\
 	$(foreach theme,$(WITH_THEMES),images_$(theme).zip) \
 	$(foreach theme,$(WITH_THEMES),$(theme)_links.txt) \
 	commandimagelist.ilst \
-	sourceimagelist.ilst \
 	sorted.lst \
 ))
 

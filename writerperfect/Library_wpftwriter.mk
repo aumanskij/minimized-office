@@ -57,34 +57,17 @@ $(eval $(call gb_Library_use_libraries,wpftwriter,\
 $(eval $(call gb_Library_use_externals,wpftwriter,\
 	abw \
 	boost_headers \
-	ebook \
 	icu_headers \
 	icui18n \
 	icuuc \
 	liblangtag \
 	libxml2 \
-	mwaw \
 	odfgen \
 	revenge \
-	staroffice \
-	wpd \
-	wpg \
-	wps \
 	zlib \
 ))
 
-ifneq ($(ENABLE_WASM_STRIP_SWEXPORTS),TRUE)
 $(eval $(call gb_Library_add_exception_objects,wpftwriter,\
-	writerperfect/source/writer/AbiWordImportFilter \
-	writerperfect/source/writer/EBookImportFilter \
-	writerperfect/source/writer/MSWorksImportFilter \
-	writerperfect/source/writer/MWAWImportFilter \
-	writerperfect/source/writer/WordPerfectImportFilter \
-))
-endif
-
-$(eval $(call gb_Library_add_exception_objects,wpftwriter,\
-	writerperfect/source/writer/StarOfficeWriterImportFilter \
 	writerperfect/source/writer/exp/XMLBase64ImportContext \
 	writerperfect/source/writer/exp/XMLFootnoteImportContext \
 	writerperfect/source/writer/exp/XMLSectionContext \
